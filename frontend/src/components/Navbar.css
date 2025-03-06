@@ -1,0 +1,66 @@
+.navbar {
+    background-color: #1abc9c; /* Vibrant teal background for the header */
+    padding: 1.5rem 3rem; /* Increased padding to give more height to the navbar */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Light shadow for depth */
+    border-radius: 10px; /* Rounded corners */
+    display: flex;
+    justify-content: flex-start; /* Align the content to the left */
+    align-items: center;
+    height: 100px; /* Set a specific height for the header */
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px; /* Restrict the width of the navbar */
+}
+
+.navbar-nav {
+    display: flex; /* Align the buttons in a row */
+    justify-content: flex-start; /* Align the buttons to the left */
+    width: auto; /* Keep the navbar size minimal */
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+    gap: 20px; /* Space between buttons */
+    flex-direction: row; /* Ensure the buttons stay in a single row */
+}
+
+.nav-item {
+    list-style: none;
+}
+
+.nav-link {
+    display: inline-block;
+    color: #ffffff; /* White text color */
+    font-size: 1.1rem; /* Slightly larger font size for readability */
+    font-weight: 600; /* Bold font */
+    text-transform: uppercase; /* Uppercase text for uniformity */
+    padding: 1rem 2rem; /* Padding to give some spacing around text */
+    text-decoration: none; /* Remove underline */
+    transition: all 0.3s ease; /* Smooth transition on hover */
+    text-align: center; /* Center text inside buttons */
+}
+
+/* Hover Effect */
+.navbar .nav-link:hover {
+    color: #f39c12; /* Golden color on hover */
+    transform: scale(1.1); /* Slightly enlarge the button on hover */
+}
+
+/* Active Link Style */
+.navbar .nav-item.active .nav-link {
+    color: #e67e22; /* Active state with orange color */
+    font-weight: 700; /* Make active link bold */
+}
+
+/* Responsive Styling for Smaller Screens */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: row; /* Keep the buttons in a single row on small screens */
+        gap: 15px; /* Reduced space between buttons on mobile */
+    }
+
+    .nav-item {
+        width: auto; /* Make sure each button stays its natural size on mobile */
+    }
+}
