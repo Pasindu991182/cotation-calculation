@@ -1,0 +1,62 @@
+.footer {
+  background-color: #2c3e50; /* Darker, sophisticated background for the footer */
+  color: #ecf0f1; /* Light greyish text color */
+  padding: 1.5rem 3rem; /* Padding around the footer */
+  text-align: center; /* Center-align the content */
+  position: fixed; /* Fixed position at the bottom of the page */
+  left: 0;
+  bottom: 0;
+  width: 100%; /* Full width */
+  font-size: 0.9rem; /* Slightly smaller text size */
+  display: flex; /* Use flexbox to center content */
+  flex-direction: column; /* Stack the content vertically */
+  justify-content: center; /* Vertically center the content */
+  align-items: center; /* Horizontally center the content */
+}
+
+/* Footer Text */
+.footer-text {
+  margin: 0; /* Remove default margin */
+  padding-bottom: 10px; /* Space between text and links */
+}
+
+/* Styling for the Footer Links */
+.footer-links {
+  list-style-type: none; /* Remove bullet points from the list */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+.footer-item {
+  display: inline-block; /* Align the items in a row */
+  margin-right: 20px; /* Space between links */
+}
+
+.footer-link {
+  color: #ecf0f1; /* Light grey text color */
+  text-decoration: none; /* Remove underline */
+  font-size: 1rem; /* Font size for the links */
+  transition: all 0.3s ease; /* Smooth transition on hover */
+}
+
+/* Hover Effect for Links */
+.footer-link:hover {
+  color: #f39c12; /* Bright yellow color on hover */
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Responsive Styling for Smaller Screens */
+@media (max-width: 768px) {
+  .footer {
+      padding: 1rem; /* Reduce padding on smaller screens */
+  }
+
+  .footer-links {
+      margin-top: 10px; /* Space between the text and links */
+  }
+
+  .footer-item {
+      display: block; /* Stack the links vertically */
+      margin-bottom: 10px; /* Space between the links */
+  }
+}
