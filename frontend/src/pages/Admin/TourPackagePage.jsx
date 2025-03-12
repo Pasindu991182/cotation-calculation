@@ -10,7 +10,7 @@ const TourPackagePage = () => {
     <div className="tour-package-container">
     <div className="header">
       <h2>Tour Packages</h2>
-        <Link to="/addtour">
+      <Link to="/admin/addtour">
           <button className="add-tour-button">Add Tour</button>
         </Link>
         </div>

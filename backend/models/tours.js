@@ -6,19 +6,19 @@ const TourScema = new mongoose.Schema({
         required :true
     },
     name:{
-        type:String
+        type:String,
     },
     destination:{
         type:Array,
     },
-    kmrs:{
-        type:Number
-    },
     days:{
-        type:String
+        type:Number,
+    },
+    Kmrs:{
+        type:Number,
     },
     photo:{
-        type:String
+        type:String,
     }
 });
 module.exports = mongoose.model("Tour",TourScema);
