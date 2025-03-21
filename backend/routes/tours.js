@@ -6,7 +6,7 @@ const Tours = require("../models/tours");
  
 router.post("/",(req,res)=>{
     Tours.create(req.body).then(()=>res.json({msg:"Tour Added succesfully"}))
-    .catch(()=>res.status(400).json({msg:"Tour adding faild"}))
+    .catch(()=>res.status(400).json({msg:"Tour adding_faild"}))
 });
 router.get("/",(req,res)=>{
     Tours.find()

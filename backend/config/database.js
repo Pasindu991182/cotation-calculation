@@ -9,7 +9,7 @@ mongoose.set("strictQuery",true,"useNewUrlParser",true);
 const connection  = async()=>{
     try{
         await mongoose.connect(dburl);
-        console.log("MongoDB connected");
+        console.log("MongoDB connected 🌺🌿");
     } catch (e) {
         console.error(e.message);
         process.exit();
