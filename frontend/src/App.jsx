@@ -11,7 +11,7 @@ import backgroundImage from './assets/background.jpg'; // Import image here
 function App() {
   return (
     <div style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <Router>
+      {/* <Router>
         <Navbar />
         <Routes>
           <Route path="/admin" element={<AdminLayout />}>
@@ -21,7 +21,7 @@ function App() {
           </Route>
         </Routes>
         <Footer />
-      </Router>
+      </Router> */}
     </div>
   );
 }

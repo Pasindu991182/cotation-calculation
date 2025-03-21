@@ -1,4 +1,5 @@
 /* Global Body Styles */
+@import "tailwindcss";
 body {
   font-family: 'Roboto', sans-serif;
   background-color: #e1e4ce;
