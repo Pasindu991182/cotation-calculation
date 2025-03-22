@@ -5,16 +5,11 @@ const Tours = require("../models/tours");
 
 const router = express.Router();
 
-// Multer Storage Configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // You can change the folder as per your requirement
-        cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-        // Save the file with the current timestamp and its original extension
-        cb(null, Date.now() + path.extname(file.originalname));
-    },
+const Tours = require("../models/tours");
+ 
+router.post("/",(req,res)=>{
+    Tours.create(req.body).then(()=>res.json({msg:"Tour Added succesfully"}))
+    .catch(()=>res.status(400).json({msg:"Tour adding_faild"}))
 });
 
 // Multer file filter to allow only image files
