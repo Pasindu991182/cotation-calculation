@@ -1,27 +1,27 @@
-import Navbar from "./components/Navbar"
-import Footer from "./components/Footer"
-import { BrowserRouter as Router,Routes,Route } from 'react-router-dom'
-import AdminDashboard from "./pages/Admin/AdminDashboard"
-import TourPackagePage from "./pages/Admin/TourPackagePage"
-import './App.css'
-import AddTourForm from "./pages/Admin/AddTourForm"
-
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import TourPackagePage from "./pages/Admin/TourPackagePage";
+import AddTourForm from "./pages/Admin/AddTourForm";
+import "./App.css";
 
 function App() {
-  
   return (
     <div>
       <Router>
-        <Navbar/>
+        <Navbar />
         <Routes>
-          <Route path="/ADMIN" element={<AdminDashboard />}/>
-          <Route path="/tourpackage" element={<TourPackagePage />}/>
+          <Route path="/ADMIN" element={<AdminDashboard />} />
+          <Route path="/tourpackage" element={<TourPackagePage />} />
           <Route path="/addtour" element={<AddTourForm />} />
+         
         </Routes>
         <Footer />
       </Router>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

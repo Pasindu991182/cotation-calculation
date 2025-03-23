@@ -2,21 +2,27 @@ const express = require("express");
 const dbconnection = require("./config/database");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const routes= require("./routes/tours")
+
+const tourRoutes = require("./routes/tours");
+const transportRoutes = require("./routes/transport");
+
 const PORT = 3000;
-
 const app = express();
-app.use(cors({origin:true,Credential:true}))
 
-//dbconnection
+// Enable CORS
+app.use(cors({ origin: true, credentials: true }));
 
+// Database Connection
 dbconnection();
 
+// Middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/",(req,res)=> res.send("HELLOW WORLD"));
-app.use("/api/tours",routes);
+// Routes
+app.get("/", (req, res) => res.send("HELLO WORLD"));
+app.use("/api/tours", tourRoutes);
+app.use("/api/transport", transportRoutes);
 
-
-app.listen(PORT,()=>console.log(`Server is running on PORT ${PORT}`))
+// Start Server
+app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));

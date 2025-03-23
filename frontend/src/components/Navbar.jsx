@@ -1,5 +1,6 @@
-import React from 'react';
-import './Navbar.css'; // Import the external CSS file for the navbar styling
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 const Navbar = () => {
   return (
@@ -7,24 +8,24 @@ const Navbar = () => {
       <div className="container">
         <ul className="navbar-nav">
           <li className="nav-item">
-            <a className="nav-link " href="/ADMIN">Admin</a>
+            <Link className="nav-link" to="/ADMIN">Admin</Link>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">Tours</a>
+            <Link className="nav-link" to="/tourpackage">Tours</Link>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">Hotels</a>
+            <Link className="nav-link" to="#">Hotels</Link>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">Guide</a>
+            <Link className="nav-link" to="#">Guide</Link>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">Transport</a>
+            <Link className="nav-link" to="/transport">Transport</Link> {/* ✅ Link to Transport Page */}
           </li>
         </ul>
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
