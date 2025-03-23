@@ -37,7 +37,7 @@ router.put("/:id",(req,res)=>{
 router.delete("/:id",(req,res)=>{
     transport.findByIdAndDelete(req.params.id).then(()=>
       res.json({msg:"delete succesfuly"})
-     .catch(()=>res.status(400).json({msg:"cannot be delete"})));
+     .catch(()=>res.status(400).json({msg:"delete failed"})));
 });
 
 module.exports = router;
