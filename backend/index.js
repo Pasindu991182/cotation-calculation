@@ -3,7 +3,8 @@ const dbconnection = require("./config/database");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-const routes = require("./routes/tours");
+const hotelRoutes = require("./routes/Hotel"); // Hotel routes
+const tourRoutes = require("./routes/tours"); // Tour routes
 const PORT = 3000;
 
 const app = express();
@@ -12,7 +13,7 @@ const app = express();
 app.use(cors({ origin: true, credentials: true }));
 
 // Database connection
-dbconnection();
+dbconnection(); // Assuming you have a `database.js` file that handles MongoDB connection
 
 // Body Parser middleware
 app.use(bodyParser.json());
@@ -22,7 +23,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
 // Routes
-app.use("/api/tours", routes);
+app.use("/api/hotels", hotelRoutes); // Hotel routes
+app.use("/api/tours", tourRoutes); // Tour routes
 
 // Default route
 app.get("/", (req, res) => res.send("HELLO WORLD"));

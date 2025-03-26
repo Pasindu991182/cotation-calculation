@@ -4,13 +4,26 @@ import App from './App.jsx'
 import HotelManagement from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelDashboard.jsx'
 import AdminAddHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelAddHotel.jsx'
 import AdminUpdateHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelUpdateHotel.jsx'
+import TourCotationCaculation from './pages/User/TourCotationCalculation/TourCotationCaculation.jsx'
+import UserHotel from './pages/User/Hotel/Hotel.jsx'
 import { createBrowserRouter,RouterProvider } from 'react-router-dom'
+
 const router = createBrowserRouter([
    // ======================== Client  Side=====================
    {
     path: "/",
     element: <App />,
   },
+
+  {
+   path: "/userHotel",
+   element: <UserHotel />,
+ },
+ {
+  path: "/TourCotationCaculation",
+  element: <TourCotationCaculation />,
+},
+
    // ========================= Admin  Side =========================
    
    {
@@ -23,7 +36,7 @@ const router = createBrowserRouter([
       element: <AdminAddHotel />,
    },
    {
-    path: '/adminHotelManagement/updateHotel',
+    path: '/hotel-details/:hotelId',
     element: <AdminUpdateHotel />,
  },
    
