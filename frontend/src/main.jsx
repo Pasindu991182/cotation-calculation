@@ -14,7 +14,6 @@ import AdminAddvehicle from './pages/Admin/AdminDashboard/AdminTransportManageme
 import AdminUpdatevehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleUpdate.jsx'
 
 
-import { createBrowserRouter,RouterProvider } from 'react-router-dom'
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
   { path: "/adminHotelManagement", element: <HotelManagement /> },
