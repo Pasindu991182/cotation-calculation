@@ -14,16 +14,21 @@ import AdminAddvehicle from './pages/Admin/AdminDashboard/AdminTransportManageme
 import AdminUpdatevehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleUpdate.jsx'
 import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AdminTour.jsx'
 import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx'
+import TourCotationCaculation from './pages/User/TourCotationCalculation/TourCotationCaculation.jsx'
+import UserHotel from './pages/User/Hotel/Hotel.jsx'
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
   { path: "/adminHotelManagement", element: <HotelManagement /> },
   { path: "/adminHotelManagement/addHotel", element: <AdminAddHotel /> },
-  { path: "/adminHotelManagement/updateHotel", element: <AdminUpdateHotel /> },
   { path: "/adminTourPackageManagement", element: <AdminTourPackage /> },
   { path: "/adminTourPackageManagement/addTour", element: <AddTourForm /> },
   { path: "/adminTourPackageManagement/updateTour/:id", element: <UpdateTour /> }, // ✅ Fixed dynamic ID in route
   { path: "/adminTourPackageManagement/deleteTour/:id", element: <DeleteTour />},
+  { path: "/userHotel",element: <UserHotel />,},
+  { path: "/TourCotationCaculation",element: <TourCotationCaculation />,},
+  { path: '/hotel-details/:hotelId',element: <AdminUpdateHotel />,},
+
    
   // ========================= Admin Transport Side =========================
   { path: '/adminTransportManagement', element: <AdminTransport />, },
@@ -34,6 +39,8 @@ const router = createBrowserRouter([
   { path: '/GuideT', element: <GuideTable />, },
 
 ]);
+
+   
 
 
 createRoot(document.getElementById('root')).render(
