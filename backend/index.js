@@ -2,16 +2,16 @@ const express = require("express");
 const dbconnection = require("./config/database");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const tourRoutes= require("./routes/tours")
+
 const PORT = 3000;
 const guideRoutes= require("./routes/guide")
+
+const guideR= require("./routes/g")
 //const cors = require("cors");
 
 
 const app = express();
 
-
-app.use(cors({origin:true,Credential:true}))
 
 // CORS configuration
 app.use(cors({ origin: true, credentials: true }));
@@ -25,13 +25,21 @@ app.use(bodyParser.urlencoded({extended:true}));
 //app.use(cors({ origin: true, credentials: true }));
 
 app.get("/",(req,res)=> res.send("HELLOW WORLD"));
-app.use("/api/tours",tourRoutes);
 
-//app.get("/", (req,res) => req.send("Hello World"));
-app.use("/api/guide", guideRoutes);
+
+
+///////////////////////////////////////change shan///////////////////////////////////////
+
+//app.use("/api/guide", guideRoutes);
+
+app.use(cors());
+app.use(express.json());
+app.use("/api/guide", guideR);
+app.use("/uploads", express.static("uploads"));
+//////////////////////////////////////////////////////////////////////////////
 
 app.listen(PORT,()=>console.log(`Server is running on PORT ${PORT}`))
 
 // Routes
-app.use("/api/tours", routes);
+
 

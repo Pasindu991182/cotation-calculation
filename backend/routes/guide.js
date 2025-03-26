@@ -15,7 +15,7 @@ router.post("/",(req, res)=> {
 });
 */
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res) => {  
     const { tourGuideID, name, Contact, language, experience, charges, photo } = req.body;
 
     try {

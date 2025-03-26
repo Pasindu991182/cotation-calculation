@@ -4,6 +4,11 @@ import App from './App.jsx'
 import HotelManagement from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelDashboard.jsx'
 import AdminAddHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelAddHotel.jsx'
 import AdminUpdateHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelUpdateHotel.jsx'
+//mport AddTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AddTourGuide.jsx'
+import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AdminTour.jsx'
+
+import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx'
+
 import { createBrowserRouter,RouterProvider } from 'react-router-dom'
 const router = createBrowserRouter([
    // ======================== Client  Side=====================
@@ -12,7 +17,7 @@ const router = createBrowserRouter([
     element: <App />,
   },
    // ========================= Admin  Side =========================
-   
+
    {
       path: '/adminHotelManagement',
       element: <HotelManagement />,
@@ -26,7 +31,24 @@ const router = createBrowserRouter([
     path: '/adminHotelManagement/updateHotel',
     element: <AdminUpdateHotel />,
  },
+
+    // ======================== Admin Tour Guide Side=====================
+     
+       {/*path: '/adminTourGuideManagement/addTourGuide',
+      element: <AddTourGuide />,*/},
    
+
+  
+       {path: '/adminTourGuideManagement',
+      element: <AdminTourGuide />, },
+  
+
+   {
+      path: '/GuideT',
+      element: <GuideTable />,
+   },
+
+
 
 ])
 
