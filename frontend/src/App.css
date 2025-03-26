@@ -8,21 +8,6 @@ body {
   color: #333;
 }
 
-/* Background image wrapper */
-.background-wrapper {
-  background-image: url('./assets/background.jpg');  /* Background image */
-  background-size: cover;  /* Cover the entire area */
-  background-position: center;  /* Center the background image */
-  background-repeat: no-repeat;  /* Prevent the image from repeating */
-  min-height: calc(100vh - 200px); /* Height of content area between navbar and footer */
-  width: 100%; /* Full width */
-  padding-top: 0px;  /* Padding above the content */
-  padding-bottom: 0px; /* Padding below the content */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+
 
 

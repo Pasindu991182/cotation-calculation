@@ -106,7 +106,7 @@ const EditHotel = () => {
                 <div key={index} className="relative w-40 h-40">
                   <img
                     src={URL.createObjectURL(image)}
-                    alt={`Hotel Pic ${index + 1}`}
+                    
                     className="object-cover w-full h-full rounded-lg"
                   />
                   <button

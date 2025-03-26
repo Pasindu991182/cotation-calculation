@@ -35,7 +35,7 @@ export default function RecoverySideNavBar() {
               <SideNavLinks linkName="TOUR GIDE" url="/" />
             </li>
             <li className="px-4 py-3 hover:bg-gray-700 hover:duration-300">
-              <SideNavLinks linkName="TRANSPORT" url="/" />
+              <SideNavLinks linkName="TRANSPORT" url="/adminTransportManagement" />
             </li>
           </ul>
         </nav>
