@@ -12,7 +12,8 @@ import DeleteTour from "./pages/Admin/AdminDashboard/AdminTourPackageManagement/
 import AdminTransport from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminTransport.jsx'
 import AdminAddvehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleAdd.jsx'
 import AdminUpdatevehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleUpdate.jsx'
-
+import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AdminTour.jsx'
+import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx'
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -29,7 +30,11 @@ const router = createBrowserRouter([
   { path:'/adminTransportManagement/addvehicle', element:<AdminAddvehicle/> },
   { path:'/adminTransportManagement/updatevehicle', element:<AdminUpdatevehicle/> },
 
+  { path: '/adminTourGuideManagement', element: <AdminTourGuide />, },
+  { path: '/GuideT', element: <GuideTable />, },
+
 ]);
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
