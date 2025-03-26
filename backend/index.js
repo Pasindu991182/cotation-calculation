@@ -24,6 +24,7 @@ app.use("/uploads", express.static("uploads"));
 
 // Routes
 app.use("/api/hotels", hotelRoutes); // Hotel routes
+
 app.use("/api/tours", tourRoutes); // Tour routes
 
 // Default route
