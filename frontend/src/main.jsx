@@ -16,9 +16,11 @@ import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement
 import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx'
 import TourCotationCaculation from './pages/User/TourCotationCalculation/TourCotationCaculation.jsx'
 import UserHotel from './pages/User/Hotel/Hotel.jsx'
+import AdminMain from './pages/Admin/AdminDashboard/AmdimMain/AdminMain.jsx'
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
+  { path: "/adminMaindashbord", element: <AdminMain /> },
   { path: "/adminHotelManagement", element: <HotelManagement /> },
   { path: "/adminHotelManagement/addHotel", element: <AdminAddHotel /> },
   { path: "/adminTourPackageManagement", element: <AdminTourPackage /> },
