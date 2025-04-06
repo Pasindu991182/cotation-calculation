@@ -1,17 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Table,
-  Button,
-  Form,
-  Modal,
-  Badge,
-  Image,
-  Container,
-} from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import GuideSummaryPDF from "./GuideSummaryPDF";
+import { FaPen, FaTrashAlt } from "react-icons/fa"; // Icons for edit and delete
+import GuideSummaryPDF from "./GuideSummaryPDF"; // Import the GuideSummaryPDF component
 
 const GuideTable = () => {
   const [guides, setGuides] = useState([]);
@@ -31,7 +21,6 @@ const GuideTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Fetch guides on component mount
   useEffect(() => {
     fetchGuides();
   }, []);
@@ -46,7 +35,6 @@ const GuideTable = () => {
     }
   };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
@@ -59,43 +47,35 @@ const GuideTable = () => {
     setFilteredGuides(filtered);
   };
 
-  // Generate Guide ID in the format TGXXX
   const generateGuideID = () => {
     const count = guides.length + 1;
     return `TG${String(count).padStart(3, "0")}`;
   };
 
-  // Validation function
   const validateForm = () => {
     const newErrors = {};
-
-    // Guide Name: Only letters and spaces allowed
     if (!newGuide.name) {
       newErrors.name = "Guide Name is required";
     } else if (!/^[A-Za-z\s]+$/.test(newGuide.name)) {
       newErrors.name = "Guide Name must contain only letters and spaces";
     }
 
-    // Contact No: Exactly 10 digits
     if (!newGuide.Contact) {
       newErrors.Contact = "Contact No is required";
     } else if (!/^\d{10}$/.test(newGuide.Contact)) {
       newErrors.Contact = "Contact No must be exactly 10 digits";
     }
 
-    // Charges Per Tour: Must be a number
     if (!newGuide.charges) {
       newErrors.charges = "Charges Per Tour is required";
     } else if (!/^\d+(\.\d+)?$/.test(newGuide.charges)) {
       newErrors.charges = "Charges Per Tour must be a number";
     }
 
-    // Language Proficiency: At least one language required
     if (newGuide.language.length === 0) {
       newErrors.language = "At least one language must be selected";
     }
 
-    // Experience: Required
     if (!newGuide.experience) {
       newErrors.experience = "Experience is required";
     }
@@ -104,14 +84,12 @@ const GuideTable = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewGuide({ ...newGuide, [name]: value });
     setErrors({ ...errors, [name]: "" });
   };
 
-  // Handle file input change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setNewGuide({ ...newGuide, photo: file });
@@ -122,7 +100,6 @@ const GuideTable = () => {
     }
   };
 
-  // Handle language checkbox changes
   const handleLanguageChange = (e) => {
     const { value, checked } = e.target;
     let updatedLanguages = [...newGuide.language];
@@ -137,13 +114,11 @@ const GuideTable = () => {
     }
   };
 
-  // Delete image
   const handleDeleteImage = () => {
     setNewGuide({ ...newGuide, photo: null });
     setPreviewImage(null);
   };
 
-  // Add new guide
   const handleAddGuide = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -164,6 +139,7 @@ const GuideTable = () => {
       await axios.post("http://localhost:3000/api/guide", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      alert("Guide added successfully!");
       fetchGuides();
       setShowModal(false);
       setNewGuide({
@@ -178,11 +154,11 @@ const GuideTable = () => {
       setPreviewImage(null);
       setErrors({});
     } catch (error) {
+      alert("Error adding guide.");
       console.error("Error adding guide:", error);
     }
   };
 
-  // Delete guide with confirmation
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this guide?"
@@ -190,14 +166,15 @@ const GuideTable = () => {
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:3000/api/guide/${id}`);
+        alert("Guide deleted successfully!");
         fetchGuides();
       } catch (error) {
+        alert("Error deleting guide.");
         console.error("Error deleting guide:", error);
       }
     }
   };
 
-  // Update guide (open modal with pre-filled data)
   const handleUpdate = (guide) => {
     setEditGuide(guide);
     setNewGuide({
@@ -214,7 +191,6 @@ const GuideTable = () => {
     setErrors({});
   };
 
-  // Submit update
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -238,6 +214,7 @@ const GuideTable = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+      alert("Guide updated successfully!");
       fetchGuides();
       setShowModal(false);
       setEditGuide(null);
@@ -253,11 +230,11 @@ const GuideTable = () => {
       setPreviewImage(null);
       setErrors({});
     } catch (error) {
+      alert("Error updating guide.");
       console.error("Error updating guide:", error);
     }
   };
 
-  // Language options
   const languages = [
     "Sinhala",
     "English",
@@ -274,284 +251,297 @@ const GuideTable = () => {
   ];
 
   return (
-    <Container className="mt-4">
-      <h2 className="mb-4">Tour Guides</h2>
-      <div className="d-flex justify-content-between mb-3">
-        <Form.Control
+    <div className="container mx-auto mt-4 p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold text-blue-600 mb-4">Tour Guides</h2>
+
+      <div className="flex justify-between mb-4">
+        <input
           type="text"
           placeholder="Search guides..."
-          style={{ width: "200px" }}
-          className="border rounded"
+          className="border rounded py-2 px-4 w-56 focus:ring-2 focus:ring-blue-500 transition-all duration-300"
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <div>
-          {guides.length > 0 ? (
-            <GuideSummaryPDF guides={guides} />
-          ) : (
-            <Button variant="success" disabled>
-              Generate PDF Summary
-            </Button>
-          )}
-          <Button
-            variant="primary"
+        <div className="flex gap-2">
+          <GuideSummaryPDF guides={guides} />
+          <button
+            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             onClick={() => setShowModal(true)}
-            className="ms-2"
           >
             + Add New Guide
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Table */}
-      <Table striped bordered hover>
-        <thead>
+      <table className="min-w-full table-auto shadow-md rounded-lg">
+        <thead className="bg-gray-100">
           <tr>
-            <th>GUID ID</th>
-            <th>GUIDE NAME</th>
-            <th>LANGUAGE</th>
-            <th>CONTACT NO</th>
-            <th>EXPERIENCE</th>
-            <th>PHOTO</th>
-            <th>CHARGES PER TOUR</th>
-            <th>ACTIONS</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">GUID ID</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">GUIDE NAME</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">LANGUAGE</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">CONTACT NO</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">EXPERIENCE</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">PHOTO</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">CHARGES</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">ACTIONS</th>
           </tr>
         </thead>
         <tbody>
           {filteredGuides.map((guide) => (
-            <tr key={guide._id}>
-              <td>{guide.tourGuideID}</td>
-              <td>{guide.name}</td>
-              <td>
+            <tr
+              key={guide._id}
+              className="hover:bg-gray-50 transition-colors"
+            >
+              <td className="px-4 py-2 text-sm text-gray-700">{guide.tourGuideID}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">{guide.name}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">
                 {guide.language.map((lang, index) => (
-                  <Badge key={index} bg="primary" className="me-1">
+                  <span
+                    key={index}
+                    className="inline-block bg-blue-500 text-white text-xs rounded-full px-2 py-1 mr-2"
+                  >
                     {lang}
-                  </Badge>
+                  </span>
                 ))}
               </td>
-              <td>{guide.Contact}</td>
-              <td>{guide.experience}</td>
-              <td>
+              <td className="px-4 py-2 text-sm text-gray-700">{guide.Contact}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">{guide.experience}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">
                 {guide.photo ? (
-                  <Image
+                  <img
                     src={`http://localhost:3000${guide.photo}`}
                     alt={guide.name}
-                    style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                    className="w-12 h-12 rounded-full object-cover"
                   />
                 ) : (
                   "No Photo"
                 )}
               </td>
-              <td>{guide.charges}</td>
-              <td>
-                <Button variant="link" onClick={() => handleUpdate(guide)}>
-                  <span role="img" aria-label="edit">
-                    ✏️
-                  </span>
-                </Button>
-                <Button variant="link" onClick={() => handleDelete(guide._id)}>
-                  <span role="img" aria-label="delete">
-                    🗑️
-                  </span>
-                </Button>
+              <td className="px-4 py-2 text-sm text-gray-700">{guide.charges}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">
+                <button
+                  className="text-blue-600 hover:text-blue-800"
+                  onClick={() => handleUpdate(guide)}
+                >
+                  <FaPen />
+                </button>
+                <button
+                  className="text-red-600 hover:text-red-800 ml-2"
+                  onClick={() => handleDelete(guide._id)}
+                >
+                  <FaTrashAlt />
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
 
       {/* Modal for Add/Edit Guide */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{editGuide ? "Edit Guide" : "Add New Guide"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={editGuide ? handleUpdateSubmit : handleAddGuide}>
-            {/* Profile Picture */}
-            <Form.Group className="mb-3 text-center">
-              <Form.Label>Profile Picture</Form.Label>
-              <div>
-                <Image
-                  src={
-                    previewImage ||
-                    "https://via.placeholder.com/100?text=Profile"
-                  }
-                  alt="Profile Preview"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-              </div>
-              <div className="mt-2">
-                <Button
-                  variant="primary"
-                  as="label"
-                  htmlFor="photo-upload"
-                  className="me-2"
-                >
-                  Upload Image
-                </Button>
-                <Form.Control
-                  id="photo-upload"
+{showModal && (
+  <div
+    className={`fixed inset-0 bg-gray-500 bg-opacity-50 backdrop-blur-lg transition-opacity duration-300 ease-in-out ${
+      showModal ? "opacity-100" : "opacity-0 pointer-events-none"
+    }`}
+    onClick={() => setShowModal(false)}
+  >
+    <div className="flex justify-center items-center min-h-screen p-4">
+      <div
+        className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-96 md:w-2/3 lg:w-1/2 xl:w-1/3"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-xl font-semibold mb-4 text-blue-600">
+          {editGuide ? "Edit Guide" : "Add New Guide"}
+        </h3>
+        <form onSubmit={editGuide ? handleUpdateSubmit : handleAddGuide}>
+          {/* Profile Picture */}
+          <div className="text-center mb-4">
+            <label className="block text-sm text-gray-700">Profile Picture</label>
+            <div>
+              <img
+                src={previewImage || "https://via.placeholder.com/100?text=Profile"}
+                alt="Profile Preview"
+                className="w-24 h-24 rounded-full object-cover mx-auto"
+              />
+            </div>
+            <div className="mt-2">
+              <label className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer">
+                Upload Image
+                <input
                   type="file"
+                  id="photo-upload"
                   name="photo"
                   onChange={handleFileChange}
-                  style={{ display: "none" }}
+                  className="hidden"
                 />
-                <Button
-                  variant="outline-primary"
-                  onClick={handleDeleteImage}
-                  disabled={!previewImage}
-                >
-                  Delete Image
-                </Button>
-              </div>
-            </Form.Group>
-
-            {/* Guide Name */}
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Guide Name <span className="text-danger">*</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={newGuide.name}
-                onChange={handleInputChange}
-                placeholder="Guide Name"
-                required
-                isInvalid={!!errors.name}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.name}
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            {/* Experience */}
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Experience <span className="text-danger">*</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="experience"
-                value={newGuide.experience}
-                onChange={handleInputChange}
-                placeholder="Experience"
-                required
-                isInvalid={!!errors.experience}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.experience}
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            {/* Contact No */}
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Contact No <span className="text-danger">*</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="Contact"
-                value={newGuide.Contact}
-                onChange={handleInputChange}
-                placeholder="Contact No"
-                required
-                isInvalid={!!errors.Contact}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.Contact}
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            {/* Charges Per Tour */}
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Charges Per Tour <span className="text-danger">*</span>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="charges"
-                value={newGuide.charges}
-                onChange={handleInputChange}
-                placeholder="Charges Per Tour"
-                required
-                isInvalid={!!errors.charges}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.charges}
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            {/* Language Proficiency */}
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Language Proficiency <span className="text-danger">*</span>
-              </Form.Label>
-              <div className="row">
-                {languages.map((lang, index) => (
-                  <div key={index} className="col-3">
-                    <Form.Check
-                      type="checkbox"
-                      label={lang}
-                      value={lang}
-                      checked={newGuide.language.includes(lang)}
-                      onChange={handleLanguageChange}
-                    />
-                  </div>
-                ))}
-              </div>
-              {errors.language && (
-                <div className="text-danger mt-2">{errors.language}</div>
-              )}
-            </Form.Group>
-
-            {/* Submit and Cancel Buttons */}
-            <div className="d-flex justify-content-between">
-              <Button variant="success" type="submit">
-                {editGuide ? "Update Guide" : "Add Guide"}
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowModal(false);
-                  setNewGuide({
-                    tourGuideID: "",
-                    name: "",
-                    Contact: "",
-                    language: [],
-                    experience: "",
-                    charges: "",
-                    photo: null,
-                  });
-                  setPreviewImage(null);
-                  setErrors({});
-                }}
+              </label>
+              <button
+                type="button"
+                className="bg-gray-300 text-gray-700 py-2 px-4 rounded ml-2"
+                onClick={handleDeleteImage}
+                disabled={!previewImage}
               >
-                Cancel
-              </Button>
+                Delete Image
+              </button>
             </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+          </div>
+
+          {/* Guide Name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Guide Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={newGuide.name}
+              onChange={handleInputChange}
+              placeholder="Guide Name"
+              className="w-full border rounded px-3 py-2"
+              required
+            />
+            {errors.name && (
+              <span className="text-red-500 text-sm">{errors.name}</span>
+            )}
+          </div>
+
+          {/* Experience */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Experience <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="experience"
+              value={newGuide.experience}
+              onChange={handleInputChange}
+              placeholder="Experience"
+              className="w-full border rounded px-3 py-2"
+              required
+            />
+            {errors.experience && (
+              <span className="text-red-500 text-sm">{errors.experience}</span>
+            )}
+          </div>
+
+          {/* Contact No */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Contact No <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="Contact"
+              value={newGuide.Contact}
+              onChange={handleInputChange}
+              placeholder="Contact No"
+              className="w-full border rounded px-3 py-2"
+              required
+            />
+            {errors.Contact && (
+              <span className="text-red-500 text-sm">{errors.Contact}</span>
+            )}
+          </div>
+
+          {/* Charges Per Tour */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Charges Per Tour <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="charges"
+              value={newGuide.charges}
+              onChange={handleInputChange}
+              placeholder="Charges Per Tour"
+              className="w-full border rounded px-3 py-2"
+              required
+            />
+            {errors.charges && (
+              <span className="text-red-500 text-sm">{errors.charges}</span>
+            )}
+          </div>
+
+          {/* Language Proficiency */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Language Proficiency <span className="text-red-500">*</span>
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {languages.map((lang, index) => (
+                <label key={index} className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    value={lang}
+                    checked={newGuide.language.includes(lang)}
+                    onChange={handleLanguageChange}
+                    className="form-checkbox"
+                  />
+                  <span className="ml-2">{lang}</span>
+                </label>
+              ))}
+            </div>
+            {errors.language && (
+              <span className="text-red-500 text-sm">{errors.language}</span>
+            )}
+          </div>
+
+          <div className="flex justify-between">
+            <button
+              type="submit"
+              className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              {editGuide ? "Update Guide" : "Add Guide"}
+            </button>
+            <button
+              type="button"
+              className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+              onClick={() => {
+                setShowModal(false);
+                setNewGuide({
+                  tourGuideID: "",
+                  name: "",
+                  Contact: "",
+                  language: [],
+                  experience: "",
+                  charges: "",
+                  photo: null,
+                });
+                setPreviewImage(null);
+                setErrors({});
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* Pagination */}
-      <div className="d-flex justify-content-between align-items-center mt-3">
-        <span>Showing 1 to {filteredGuides.length} of {guides.length} results</span>
-        <div>
-          <Button variant="outline-secondary" size="sm" disabled>
+      <div className="flex justify-between items-center mt-6">
+        <span className="text-sm text-gray-600">
+          Showing 1 to {filteredGuides.length} of {guides.length} results
+        </span>
+        <div className="flex gap-2">
+          <button
+            className="bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400"
+            disabled
+          >
             ←
-          </Button>
-          <Button variant="outline-secondary" size="sm" disabled className="ms-2">
+          </button>
+          <button
+            className="bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400"
+            disabled
+          >
             →
-          </Button>
+          </button>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

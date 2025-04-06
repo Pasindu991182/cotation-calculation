@@ -1,10 +1,4 @@
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-import TourPackagePage from "./pages/Admin/TourPackagePage";
-import AddTourForm from "./pages/Admin/AddTourForm";
-import AdminLayout from "./components/AdminLayout";  // Import AdminLayout
+  // Import AdminLayout
 import './App.css';  // Make sure this is included
 import backgroundImage from './assets/background.jpg'; // Import image here
 
