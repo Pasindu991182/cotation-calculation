@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "react-bootstrap";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { FaFilePdf } from "react-icons/fa"; // Import FaFilePdf for PDF icon
@@ -63,13 +62,12 @@ const GuideSummaryPDF = ({ guides }) => {
   };
 
   return (
-    <Button
-      variant="success"
+    <button
       onClick={generatePDF}
       className="bg-green-600 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-green-700 transition-colors"
     >
       <FaFilePdf /> Generate PDF Summary
-    </Button>
+    </button>
   );
 };
 

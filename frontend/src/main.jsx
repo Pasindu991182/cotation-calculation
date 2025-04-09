@@ -6,7 +6,7 @@ import AdminAddHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/Adm
 import AdminUpdateHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelUpdateHotel.jsx'
 //mport AddTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AddTourGuide.jsx'
 import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AdminTour.jsx'
-
+import UserHotel from './pages/User/Hotel/Hotel.jsx';
 import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx'
 
 import { createBrowserRouter,RouterProvider } from 'react-router-dom'
@@ -16,6 +16,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
   },
+  {
+   path: "/UserHotel",
+   element: <UserHotel />,
+ },
    // ========================= Admin  Side =========================
 
    {

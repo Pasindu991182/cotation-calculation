@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPen, FaTrashAlt } from "react-icons/fa"; // Icons for edit and delete
-import GuideSummaryPDF from "./GuideSummaryPDF"; // Import the GuideSummaryPDF component
+import { FaPen, FaTrashAlt, FaUpload, FaTrash } from "react-icons/fa"; // Icons for edit and delete
+import GuideSummaryPDF from "./GuideSummaryPDF";
+import Uploadimage from "../../../../assets/profile2.png"; // Import the GuideSummaryPDF component
 
 const GuideTable = () => {
   const [guides, setGuides] = useState([]);
@@ -276,23 +277,36 @@ const GuideTable = () => {
       <table className="min-w-full table-auto shadow-md rounded-lg">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 text-left text-sm text-gray-600">GUID ID</th>
-            <th className="px-4 py-2 text-left text-sm text-gray-600">GUIDE NAME</th>
-            <th className="px-4 py-2 text-left text-sm text-gray-600">LANGUAGE</th>
-            <th className="px-4 py-2 text-left text-sm text-gray-600">CONTACT NO</th>
-            <th className="px-4 py-2 text-left text-sm text-gray-600">EXPERIENCE</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">
+              GUID ID
+            </th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">
+              GUIDE NAME
+            </th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">
+              LANGUAGE
+            </th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">
+              CONTACT NO
+            </th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">
+              EXPERIENCE
+            </th>
             <th className="px-4 py-2 text-left text-sm text-gray-600">PHOTO</th>
-            <th className="px-4 py-2 text-left text-sm text-gray-600">CHARGES</th>
-            <th className="px-4 py-2 text-left text-sm text-gray-600">ACTIONS</th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">
+              CHARGES
+            </th>
+            <th className="px-4 py-2 text-left text-sm text-gray-600">
+              ACTIONS
+            </th>
           </tr>
         </thead>
         <tbody>
           {filteredGuides.map((guide) => (
-            <tr
-              key={guide._id}
-              className="hover:bg-gray-50 transition-colors"
-            >
-              <td className="px-4 py-2 text-sm text-gray-700">{guide.tourGuideID}</td>
+            <tr key={guide._id} className="hover:bg-gray-50 transition-colors">
+              <td className="px-4 py-2 text-sm text-gray-700">
+                {guide.tourGuideID}
+              </td>
               <td className="px-4 py-2 text-sm text-gray-700">{guide.name}</td>
               <td className="px-4 py-2 text-sm text-gray-700">
                 {guide.language.map((lang, index) => (
@@ -304,8 +318,12 @@ const GuideTable = () => {
                   </span>
                 ))}
               </td>
-              <td className="px-4 py-2 text-sm text-gray-700">{guide.Contact}</td>
-              <td className="px-4 py-2 text-sm text-gray-700">{guide.experience}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">
+                {guide.Contact}
+              </td>
+              <td className="px-4 py-2 text-sm text-gray-700">
+                {guide.experience}
+              </td>
               <td className="px-4 py-2 text-sm text-gray-700">
                 {guide.photo ? (
                   <img
@@ -317,7 +335,9 @@ const GuideTable = () => {
                   "No Photo"
                 )}
               </td>
-              <td className="px-4 py-2 text-sm text-gray-700">{guide.charges}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">
+                {guide.charges}
+              </td>
               <td className="px-4 py-2 text-sm text-gray-700">
                 <button
                   className="text-blue-600 hover:text-blue-800"
@@ -338,188 +358,206 @@ const GuideTable = () => {
       </table>
 
       {/* Modal for Add/Edit Guide */}
-{showModal && (
-  <div
-    className={`fixed inset-0 bg-gray-500 bg-opacity-50 backdrop-blur-lg transition-opacity duration-300 ease-in-out ${
-      showModal ? "opacity-100" : "opacity-0 pointer-events-none"
-    }`}
-    onClick={() => setShowModal(false)}
-  >
-    <div className="flex justify-center items-center min-h-screen p-4">
-      <div
-        className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-96 md:w-2/3 lg:w-1/2 xl:w-1/3"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h3 className="text-xl font-semibold mb-4 text-blue-600">
-          {editGuide ? "Edit Guide" : "Add New Guide"}
-        </h3>
-        <form onSubmit={editGuide ? handleUpdateSubmit : handleAddGuide}>
-          {/* Profile Picture */}
-          <div className="text-center mb-4">
-            <label className="block text-sm text-gray-700">Profile Picture</label>
-            <div>
-              <img
-                src={previewImage || "https://via.placeholder.com/100?text=Profile"}
-                alt="Profile Preview"
-                className="w-24 h-24 rounded-full object-cover mx-auto"
-              />
-            </div>
-            <div className="mt-2">
-              <label className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer">
-                Upload Image
-                <input
-                  type="file"
-                  id="photo-upload"
-                  name="photo"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </label>
-              <button
-                type="button"
-                className="bg-gray-300 text-gray-700 py-2 px-4 rounded ml-2"
-                onClick={handleDeleteImage}
-                disabled={!previewImage}
-              >
-                Delete Image
-              </button>
-            </div>
-          </div>
+      {showModal && (
+        <div
+          className={`fixed inset-0 bg-opacity-50 backdrop-blur-lg transition-opacity duration-300 ease-in-out ${
+            showModal ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setShowModal(false)}
+        >
+          <div className="flex justify-center items-center min-h-screen p-4 max-h-[90vh] overflow-y-auto">
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 max-h-[90vh] overflow-y-auto hide-scrollbar"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-semibold mb-4 text-blue-600">
+                {editGuide ? "Edit Guide" : "Add New Guide"}
+              </h3>
+              <form onSubmit={editGuide ? handleUpdateSubmit : handleAddGuide}>
+                {/* Profile Picture */}
+                <div className="text-center mb-4 border-dotted border-2 border-gray-300 p-6">
+                  <div className="flex justify-center items-center mb-2">
+                    <div className="w-40 h-40 rounded-full border-dashed border-2 border-b-sky-700 flex justify-center items-center">
+                      <img
+                        src={previewImage || Uploadimage}
+                        alt="Profile Preview"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </div>
+                  </div>
+                  <label className="block text-sm text-gray-700 mb-2">
+                    Profile Picture
+                  </label>
+                  <div className="flex justify-center gap-4">
+                    <label className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer hover:bg-blue-700 transition-colors">
+                      <input
+                        type="file"
+                        id="photo-upload"
+                        name="photo"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                      <span className="flex items-center gap-2">
+                        <FaUpload className="w-3.5 h-3.5" /> {/* Upload Icon */}
+                        Upload Image
+                      </span>
+                    </label>
+                    <button
+                      type="button"
+                      className="bg-red-600 text-white py-2 px-5 rounded cursor-pointer hover:bg-red-700 transition-colors"
+                      onClick={handleDeleteImage}
+                      disabled={!previewImage}
+                    >
+                      <span className="flex items-center gap-2">
+                        <FaTrash className="w-3.5 h-3.5" /> {/* Delete Icon */}
+                        Delete Image
+                      </span>
+                    </button>
+                  </div>
+                </div>
 
-          {/* Guide Name */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Guide Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={newGuide.name}
-              onChange={handleInputChange}
-              placeholder="Guide Name"
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-            {errors.name && (
-              <span className="text-red-500 text-sm">{errors.name}</span>
-            )}
-          </div>
-
-          {/* Experience */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Experience <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="experience"
-              value={newGuide.experience}
-              onChange={handleInputChange}
-              placeholder="Experience"
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-            {errors.experience && (
-              <span className="text-red-500 text-sm">{errors.experience}</span>
-            )}
-          </div>
-
-          {/* Contact No */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Contact No <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="Contact"
-              value={newGuide.Contact}
-              onChange={handleInputChange}
-              placeholder="Contact No"
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-            {errors.Contact && (
-              <span className="text-red-500 text-sm">{errors.Contact}</span>
-            )}
-          </div>
-
-          {/* Charges Per Tour */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Charges Per Tour <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="charges"
-              value={newGuide.charges}
-              onChange={handleInputChange}
-              placeholder="Charges Per Tour"
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-            {errors.charges && (
-              <span className="text-red-500 text-sm">{errors.charges}</span>
-            )}
-          </div>
-
-          {/* Language Proficiency */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Language Proficiency <span className="text-red-500">*</span>
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {languages.map((lang, index) => (
-                <label key={index} className="inline-flex items-center">
+                {/* Guide Name */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Guide Name <span className="text-red-500">*</span>
+                  </label>
                   <input
-                    type="checkbox"
-                    value={lang}
-                    checked={newGuide.language.includes(lang)}
-                    onChange={handleLanguageChange}
-                    className="form-checkbox"
+                    type="text"
+                    name="name"
+                    value={newGuide.name}
+                    onChange={handleInputChange}
+                    placeholder="Guide Name"
+                    className="w-full border rounded px-3 py-2"
+                    required
                   />
-                  <span className="ml-2">{lang}</span>
-                </label>
-              ))}
+                  {errors.name && (
+                    <span className="text-red-500 text-sm">{errors.name}</span>
+                  )}
+                </div>
+
+                {/* Experience */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Experience <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="experience"
+                    value={newGuide.experience}
+                    onChange={handleInputChange}
+                    placeholder="Experience"
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                  {errors.experience && (
+                    <span className="text-red-500 text-sm">
+                      {errors.experience}
+                    </span>
+                  )}
+                </div>
+
+                {/* Contact No */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Contact No <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="Contact"
+                    value={newGuide.Contact}
+                    onChange={handleInputChange}
+                    placeholder="Contact No"
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                  {errors.Contact && (
+                    <span className="text-red-500 text-sm">
+                      {errors.Contact}
+                    </span>
+                  )}
+                </div>
+
+                {/* Charges Per Tour */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Charges Per Tour <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="charges"
+                    value={newGuide.charges}
+                    onChange={handleInputChange}
+                    placeholder="Charges Per Tour"
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                  {errors.charges && (
+                    <span className="text-red-500 text-sm">
+                      {errors.charges}
+                    </span>
+                  )}
+                </div>
+
+                {/* Language Proficiency */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Language Proficiency <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {languages.map((lang, index) => (
+                      <label key={index} className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          value={lang}
+                          checked={newGuide.language.includes(lang)}
+                          onChange={handleLanguageChange}
+                          className="form-checkbox"
+                        />
+                        <span className="ml-2">{lang}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {errors.language && (
+                    <span className="text-red-500 text-sm">
+                      {errors.language}
+                    </span>
+                  )}
+                </div>
+
+                {/* Buttons */}
+                <div className="flex flex-col sm:flex-row justify-between gap-4 mt-4">
+                  <button
+                    type="submit"
+                    className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors w-full sm:w-auto"
+                  >
+                    {editGuide ? "Update Guide" : "Add Guide"}
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors w-full sm:w-auto"
+                    onClick={() => {
+                      setShowModal(false);
+                      setNewGuide({
+                        tourGuideID: "",
+                        name: "",
+                        Contact: "",
+                        language: [],
+                        experience: "",
+                        charges: "",
+                        photo: null,
+                      });
+                      setPreviewImage(null);
+                      setErrors({});
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
-            {errors.language && (
-              <span className="text-red-500 text-sm">{errors.language}</span>
-            )}
           </div>
-
-          <div className="flex justify-between">
-            <button
-              type="submit"
-              className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
-            >
-              {editGuide ? "Update Guide" : "Add Guide"}
-            </button>
-            <button
-              type="button"
-              className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
-              onClick={() => {
-                setShowModal(false);
-                setNewGuide({
-                  tourGuideID: "",
-                  name: "",
-                  Contact: "",
-                  language: [],
-                  experience: "",
-                  charges: "",
-                  photo: null,
-                });
-                setPreviewImage(null);
-                setErrors({});
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-)}
-
+        </div>
+      )}
 
       {/* Pagination */}
       <div className="flex justify-between items-center mt-6">
