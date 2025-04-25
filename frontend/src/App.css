@@ -2,27 +2,36 @@
 @import "tailwindcss";
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #e1e4ce;
+  background-color: #ffffff;
   margin: 0;
   padding: 0;
   color: #333;
 }
 
-/* Background image wrapper */
-.background-wrapper {
-  background-image: url('./assets/background.jpg');  /* Background image */
-  background-size: cover;  /* Cover the entire area */
-  background-position: center;  /* Center the background image */
-  background-repeat: no-repeat;  /* Prevent the image from repeating */
-  min-height: calc(100vh - 200px); /* Height of content area between navbar and footer */
-  width: 100%; /* Full width */
-  padding-top: 0px;  /* Padding above the content */
-  padding-bottom: 0px; /* Padding below the content */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+/* Background image wrapper *
+
+/* Global Styles for Slide-in/Slide-out Animation */
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
+
+.z-50 {
+  z-index: 50;
+}
+
+.origin-bottom {
+  transform-origin: bottom;
+}
+
+/* Hide the scrollbar but still allow vertical scrolling */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+
 
 

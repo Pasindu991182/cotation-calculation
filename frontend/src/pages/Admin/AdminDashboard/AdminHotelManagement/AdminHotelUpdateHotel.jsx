@@ -194,14 +194,14 @@ const EditHotel = () => {
               {/* Room Picture Section */}
               <div className="mb-6">
                 <label className="block mb-2 font-medium text-gray-700">
-                  Room Picture
+                  Hotel Picture
                 </label>
 
                 {/* Backend Images Section */}
                 {backendImages.length > 0 && (
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold mb-4">
-                      Backend Images
+                      Added Images
                     </h3>
                     <div className="flex overflow-x-auto py-2 space-x-4">
                       {backendImages.map((image, index) => (
@@ -312,8 +312,8 @@ const EditHotel = () => {
                     required
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
-                    <option value="Deluxe">Deluxe</option>
-                    <option value="Suite">Suite</option>
+                    <option value="Luxury">Luxury</option>
+                    <option value="Budget">Budget</option>
                     <option value="Standard">Standard</option>
                   </select>
                 </div>
