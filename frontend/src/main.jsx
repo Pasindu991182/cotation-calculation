@@ -8,15 +8,15 @@ import AdminUpdateHotel from "./pages/Admin/AdminDashboard/AdminHotelManagement/
 import AdminTourPackage from "./pages/Admin/AdminDashboard/AdminTourPackageManagement/AdminTourPackage.jsx";
 import AddTourForm from "./pages/Admin/AdminDashboard/AdminTourPackageManagement/AddTourForm.jsx";
 import UpdateTour from "./pages/Admin/AdminDashboard/AdminTourPackageManagement/UpdateTour.jsx";
-import DeleteTour from "./pages/Admin/AdminDashboard/AdminTourPackageManagement/DeleteTour.jsx"
-import AdminTransport from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminTransport.jsx'
-import AdminAddvehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleAdd.jsx'
-import AdminUpdatevehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleUpdate.jsx'
-import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AdminTour.jsx'
+import DeleteTour from "./pages/Admin/AdminDashboard/AdminTourPackageManagement/DeleteTour.jsx";
+import AdminTransport from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminTransport.jsx';
+import AdminAddvehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleAdd.jsx';
+import AdminUpdatevehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleUpdate.jsx';
+import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AdminTour.jsx';
 import UserHotel from './pages/User/Hotel/Hotel.jsx';
-import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx'
-import TourCotationCaculation from './pages/User/TourCotationCalculation/TourCotationCaculation.jsx'
-import UserHotel from './pages/User/Hotel/Hotel.jsx'
+import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx';
+import TourCotationCaculation from './pages/User/TourCotationCalculation/TourCotationCaculation.jsx';
+
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
