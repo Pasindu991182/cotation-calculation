@@ -1,27 +1,53 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  // Import Router, Routes, Route
 import './App.css';
 import App from './App.jsx';
 import HotelManagement from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelDashboard.jsx';
 import AdminAddHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelAddHotel.jsx';
 import AdminUpdateHotel from './pages/Admin/AdminDashboard/AdminHotelManagement/AdminHotelUpdateHotel.jsx';
-import TourCotationCaculation from './pages/User/TourCotationCalculation/TourCotationCaculation.jsx';
+import AdminTourPackage from './pages/Admin/AdminDashboard/AdminTourPackageManagement/AdminTourPackage.jsx';
+import AddTourForm from './pages/Admin/AdminDashboard/AdminTourPackageManagement/AddTourForm.jsx';
+import UpdateTour from './pages/Admin/AdminDashboard/AdminTourPackageManagement/UpdateTour.jsx';
+import DeleteTour from './pages/Admin/AdminDashboard/AdminTourPackageManagement/DeleteTour.jsx';
+import AdminTransport from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminTransport.jsx';
+import AdminAddvehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleAdd.jsx';
+import AdminUpdatevehicle from './pages/Admin/AdminDashboard/AdminTransportManagement/AdminvehicleUpdate.jsx';
+import AdminTourGuide from './pages/Admin/AdminDashboard/AdminTourGideManagement/AdminTour.jsx';
+import GuideTable from './pages/Admin/AdminDashboard/AdminTourGideManagement/Tguid.jsx';
 import UserHotel from './pages/User/Hotel/Hotel.jsx';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';  // React Router
- // Import AnimatePresence from Framer Motion  // Import the Transition component
+import TourCotationCaculation from './pages/User/TourCotationCalculation/TourCotationCaculation.jsx';
 
 const AppRoutes = () => (
   <Router>
-    
-      <Routes>
-        <Route path="/*" element={<App />} />
-        <Route path="/userHotel" element={<UserHotel />} />
-        <Route path="/TourCotationCaculation" element={<TourCotationCaculation />} />
-        <Route path="/adminHotelManagement" element={<HotelManagement />} />
-        <Route path="/adminHotelManagement/addHotel" element={ <AdminAddHotel/>} />
-        <Route path="/hotel-details/:hotelId" element={<AdminUpdateHotel />} />
-      </Routes>
-    
+    <Routes>
+      {/* Main App Route */}
+      <Route path="/*" element={<App />} />
+
+      {/* Hotel Management Routes */}
+      <Route path="/adminHotelManagement" element={<HotelManagement />} />
+      <Route path="/adminHotelManagement/addHotel" element={<AdminAddHotel />} />
+      <Route path="/hotel-details/:hotelId" element={<AdminUpdateHotel />} />
+
+      {/* Tour Package Management Routes */}
+      <Route path="/adminTourPackageManagement" element={<AdminTourPackage />} />
+      <Route path="/adminTourPackageManagement/addTour" element={<AddTourForm />} />
+      <Route path="/adminTourPackageManagement/updateTour/:id" element={<UpdateTour />} />
+      <Route path="/adminTourPackageManagement/deleteTour/:id" element={<DeleteTour />} />
+
+      {/* Transport Management Routes */}
+      <Route path="/adminTransportManagement" element={<AdminTransport />} />
+      <Route path="/adminTransportManagement/addvehicle" element={<AdminAddvehicle />} />
+      <Route path="/adminTransportManagement/updatevehicle" element={<AdminUpdatevehicle />} />
+
+      {/* Tour Guide Management Routes */}
+      <Route path="/adminTourGuideManagement" element={<AdminTourGuide />} />
+      <Route path="/GuideT" element={<GuideTable />} />
+
+      {/* User Side Routes */}
+      <Route path="/userHotel" element={<UserHotel />} />
+      <Route path="/TourCotationCaculation" element={<TourCotationCaculation />} />
+    </Routes>
   </Router>
 );
 

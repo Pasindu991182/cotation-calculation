@@ -8,9 +8,6 @@ body {
   color: #333;
 }
 
-<<<<<<< HEAD
-
-=======
 /* Background image wrapper *
 
 /* Global Styles for Slide-in/Slide-out Animation */
@@ -29,16 +26,8 @@ body {
 .origin-bottom {
   transform-origin: bottom;
 }
->>>>>>> savindu
 
 /* Hide the scrollbar but still allow vertical scrolling */
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: none;
 }
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> savindu
