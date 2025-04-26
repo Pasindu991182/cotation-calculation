@@ -2,15 +2,43 @@
 @import "tailwindcss";
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #e1e4ce;
+  background-color: #ffffff;
   margin: 0;
   padding: 0;
   color: #333;
 }
 
+<<<<<<< HEAD
 
+=======
+/* Background image wrapper *
+
+/* Global Styles for Slide-in/Slide-out Animation */
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.origin-bottom {
+  transform-origin: bottom;
+}
+>>>>>>> savindu
 
 /* Hide the scrollbar but still allow vertical scrolling */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> savindu

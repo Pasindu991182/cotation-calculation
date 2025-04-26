@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import hotel23 from '../../../assets/Hotel23.png';
 
 const TourPackageQuotation = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,7 +30,7 @@ const TourPackageQuotation = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-cover bg-center h-96" style={{ backgroundImage: "url('https://via.placeholder.com/1500x700')" }}>
+      <section className="bg-cover bg-center h-96" style={{ backgroundImage: `url(${hotel23})` }}>
         <div className="container mx-auto text-center py-24 text-white">
           <h2 className="text-4xl font-bold mb-4">Travel, enjoy and live a new and full life</h2>
           <p className="text-xl mb-4">Built Wicket longer admire do barton vanity itself do in it.</p>

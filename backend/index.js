@@ -33,6 +33,8 @@ app.use("/api/transport", transportRoutes);
 app.use("/api/guide", guideR);
 app.use("/api/hotels", hotelRoutes); // Hotel routes
 
+app.use("/api/tours", tourRoutes); // Tour routes
+
 
 
 // Start Server

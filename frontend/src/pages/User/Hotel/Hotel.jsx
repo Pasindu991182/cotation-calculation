@@ -51,7 +51,7 @@ const HotelPage = () => {
   <div className="absolute inset-0 bg-gradient-to-r from-purple-200 via-pink-300 to-orange-500 opacity-70"></div>
   
   <div className="container mx-auto text-center py-24 relative z-10">
-    <h2 className="text-9xl font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-red-300 to-pink-200 mb-6 animate__animated animate__fadeIn text-blue-400">
+    <h2 className="text-4xl font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-red-300 to-pink-200 mb-6 animate__animated animate__fadeIn text-blue-400">
       Welcome to FlamingGO's Tour Quotation Calculator,
     </h2>
     <p className="text-2xl font-semibold text-gray-100 opacity-90 mb-6 leading-relaxed">
