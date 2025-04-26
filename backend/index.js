@@ -3,29 +3,43 @@ const dbconnection = require("./config/database");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-const routes = require("./routes/tours");
+const guideR= require("./routes/g")
+const tourRoutes = require("./routes/tours");
+const transportRoutes = require("./routes/transport");
+const hotelRoutes = require("./routes/Hotel"); // Hotel routes
 const PORT = 3000;
 
 const app = express();
 
+
 // CORS configuration
 app.use(cors({ origin: true, credentials: true }));
 
-// Database connection
+// Database Connection
 dbconnection();
 
-// Body Parser middleware
+// Middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended:true}));
 
-// Serve static files (e.g., images uploaded to the 'uploads' directory)
+
 app.use("/uploads", express.static("uploads"));
 
+
+
 // Routes
-app.use("/api/tours", routes);
+app.use("/api/tours", tourRoutes);
+app.use("/api/transport", transportRoutes);
+app.use("/api/guide", guideR);
+app.use("/api/hotels", hotelRoutes); // Hotel routes
 
-// Default route
-app.get("/", (req, res) => res.send("HELLO WORLD"));
 
-// Start the server
+
+// Start Server
 app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
+app.get("/",(req,res)=> res.send("HELLOW WORLD"));
+
+
+app.use(express.json());
+
+
