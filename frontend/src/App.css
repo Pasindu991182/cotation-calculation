@@ -10,4 +10,7 @@ body {
 
 
 
-
+/* Hide the scrollbar but still allow vertical scrolling */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

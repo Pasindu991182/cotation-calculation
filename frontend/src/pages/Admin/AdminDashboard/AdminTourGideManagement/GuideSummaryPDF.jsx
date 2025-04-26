@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "react-bootstrap";
 import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable"; // Import autoTable explicitly
+import autoTable from "jspdf-autotable";
+import { FaFilePdf } from "react-icons/fa"; // Import FaFilePdf for PDF icon
 
 const GuideSummaryPDF = ({ guides }) => {
   const generatePDF = () => {
@@ -39,17 +39,21 @@ const GuideSummaryPDF = ({ guides }) => {
         guide.charges || "N/A",
       ]);
 
-      // Use autoTable directly
+      // Use autoTable to create a table in the PDF
       autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
         startY: 40,
-        theme: "striped",
-        headStyles: { fillColor: [22, 160, 133] },
+        theme: "striped", // Adds striped rows for a cleaner look
+        headStyles: { fillColor: [22, 160, 133] }, // Customize header background color
       });
 
       // Save the PDF
       doc.save("tour-guides-summary.pdf");
+
+      // Alert to notify the user that PDF is generated
+      alert("PDF generated successfully!");
+
       console.log("PDF generated and saved successfully!");
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -58,9 +62,12 @@ const GuideSummaryPDF = ({ guides }) => {
   };
 
   return (
-    <Button variant="success" onClick={generatePDF}>
-      Generate PDF Summary
-    </Button>
+    <button
+      onClick={generatePDF}
+      className="bg-green-600 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-green-700 transition-colors"
+    >
+      <FaFilePdf /> Generate PDF Summary
+    </button>
   );
 };
 
