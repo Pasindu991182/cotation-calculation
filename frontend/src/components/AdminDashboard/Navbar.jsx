@@ -30,10 +30,10 @@ export default function RecoverySideNavBar() {
             <SideNavLinks linkName="HOTELS" url="/adminHotelManagement" />
           </li>
           <li className="px-4 py-3 hover:bg-gray-700 transition duration-300">
-            <SideNavLinks linkName="TOUR GUIDE" url="/" />
+            <SideNavLinks linkName="TOUR GUIDE" url="/adminTourGuideManagement" />
           </li>
           <li className="px-4 py-3 hover:bg-gray-700 transition duration-300">
-            <SideNavLinks linkName="TRANSPORT" url="/" />
+            <SideNavLinks linkName="TRANSPORT" url="/adminTransportManagement" />
           </li>
         </ul>
       </nav>
