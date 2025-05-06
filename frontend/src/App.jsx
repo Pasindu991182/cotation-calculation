@@ -1,13 +1,13 @@
 
-import './App.css';  // Make sure this is included
-import backgroundImage from './assets/background.jpg'; // Import image here
+import './App.css'
 
 function App() {
+  
+
   return (
-    <div style={{ backgroundImage: `url(${backgroundImage})` }}>
-      {}
-    </div>
-  );
+    <>
+    </>
+  )
 }
 
-export default App;
+export default App

@@ -57,17 +57,49 @@ router.get("/", (req, res) => {
         .catch(() => res.status(400).json({ msg: "Failed to fetch tours" }));
 });
 
-// PUT route to update a tour by ID
+
+
+
 router.put("/:id", async (req, res) => {
+    console.log("Received update request:", req.body);
     try {
-        const updatedTour = await Tours.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedTour) {
-            return res.status(404).json({ msg: "Tour not found" });
-        }
-        res.json({ msg: "Updated successfully", updatedTour });
+      const updatedTour = await Tours.findOneAndUpdate(
+        { TourID: req.params.id },
+        req.body,
+        { new: true }
+      );
+      if (!updatedTour) {
+        return res.status(404).json({ msg: "Tour not found" });
+      }
+      res.json({ msg: "Updated successfully", updatedTour });
     } catch (error) {
-        res.status(400).json({ msg: "Update failed", error: error.message });
+      console.error("Update error:", error.message);
+      res.status(400).json({ msg: "Update failed", error: error.message });
     }
-});
+  });
+
+
+  // DELETE Tour Package by TourID
+  router.delete("/:id", async (req, res) => {
+    const cleanId = req.params.id.trim();
+    console.log("Received delete request for TourID:", cleanId);
+  
+    try {
+      const deletedTour = await Tours.findOneAndDelete({ TourID: cleanId });
+  
+      if (!deletedTour) {
+        return res.status(404).json({ msg: "Tour not found" });
+      }
+  
+      res.json({ msg: "Tour deleted successfully", deletedTour });
+    } catch (error) {
+      console.error("Delete error:", error.message);
+      res.status(500).json({ msg: "Deletion failed", error: error.message });
+    }
+  });
+  
+  
+  
+
 
 module.exports = router;
