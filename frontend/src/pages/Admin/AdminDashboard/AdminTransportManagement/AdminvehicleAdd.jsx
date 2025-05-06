@@ -54,7 +54,7 @@ export default function AddVehicleForm() {
             {/* Image Upload */}
             <div className="grid grid-cols-3 gap-4 mb-4">
               {[0, 1, 2].map((index) => (
-                <div key={index} className="border-2 border-dashed border-gray-400 p-4 rounded-lg text-center bg-gray-100">
+                <div key={index} className="border-2 border-dashed border-gray-400 p-4 rounded-lg text-center ">
                   {/* Display image if it's selected */}
                   {vehicle.images[index] ? (
                     <img

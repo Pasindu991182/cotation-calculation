@@ -36,14 +36,19 @@ export function TransportManagement() {
   };
 
   const handleSaveChanges = () => {
-    if (currentVehicle.id) {
-      const updatedVehicles = vehicles.map((vehicle) => vehicle.id === currentVehicle.id ? currentVehicle : vehicle);
+    if (vehicles.some((v) => v.id === currentVehicle.id)) {
+      // If the vehicle already exists (by ID), update it
+      const updatedVehicles = vehicles.map((vehicle) =>
+        vehicle.id === currentVehicle.id ? currentVehicle : vehicle
+      );
       setVehicles(updatedVehicles);
     } else {
-      setVehicles([...vehicles, { ...currentVehicle, id: Math.random().toString(36).substr(2, 9) }]);
+      // If it's a new vehicle, add it
+      setVehicles([...vehicles, currentVehicle]);
     }
     setIsModalOpen(false);
   };
+  
 
   const getTabData = () => {
     let data = vehicles;
@@ -293,7 +298,7 @@ export function TransportManagement() {
 
             {/* Modal for updating vehicle */}
                   {isModalOpen && currentVehicle && (
-        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0  bg-gray-100 bg-opacity-30 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h3 className="text-2xl font-semibold mb-4">Update Vehicle</h3>
             <div className="mb-4">
@@ -398,7 +403,7 @@ export function TransportManagement() {
 
             {/* Delete Confirmation Modal */}
             {isDeleteConfirmOpen && currentVehicle && (
-              <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+              <div className="fixed inset-0  bg-opacity-10 flex justify-center items-center z-50">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                   <h3 className="text-2xl font-semibold mb-4">Are you sure you want to delete this vehicle?</h3>
                   <p className="mb-4">
