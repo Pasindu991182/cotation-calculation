@@ -1,20 +1,10 @@
-import { useState } from "react";
-import { FaEdit, FaTrash, FaCamera } from "react-icons/fa"; // Importing icons
+import { useState } from "react"; // Importing icons
 import SideNavbar from "./../../../../components/AdminDashboard/Navbar";
 import Header from "./../../../../components/AdminDashboard/Header";
-import SideNavLinks from "../../../../components/SideNavLinks/SideNavLinks";
 import TGtable from "./Tguid";
 
+
 export default function TourGuideManagement() {
-  const [guides, setGuides] = useState([
-    { id: 231, name: "K P KARUNAPALA", languages: "ENGLISH, FRENCH", contact: "0771231236", experience: 10, charges: 30000 },
-    { id: 232, name: "H M SUGATH DESHAN", languages: "ENGLISH, JAPANESE", contact: "0771231248", experience: 20, charges: 30000 },
-    { id: 233, name: "DESHAN SISIRA", languages: "ENGLISH, KOREAN, FRENCH", contact: "0771231256", experience: 20, charges: 30000 },
-    { id: 234, name: "SARANAPAL", languages: "ENGLISH, TAMIL, ARABIC", contact: "0761231236", experience: 20, charges: 30000 },
-    { id: 235, name: "JAGATH ROHANA", languages: "ARABIC, HINDI, KOREAN", contact: "07712324816", experience: 20, charges: 30000 },
-    { id: 236, name: "KUMARA SOMAPALA", languages: "SPANISH, URDU, RUSSIAN", contact: "0771231236", experience: 10, charges: 30000 },
-    { id: 237, name: "DILAN SUNANDA", languages: "CHINESE, BENGALI, URDU, PORTUGUESE", contact: "0771231236", experience: 10, charges: 30000 },
-  ]);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -25,7 +15,7 @@ export default function TourGuideManagement() {
     
 
       {/* Main Content */}
-      <div className="flex-1 bg-gray-100 p-6 rounded-lg shadow-lg">
+      <div className="flex-1 bg-gray-100 p-6 rounded-lg">
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex space-x-6">
@@ -112,7 +102,6 @@ export default function TourGuideManagement() {
         </div>
 
         {/* Tour Guides Table */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex justify-between mb-4">
             
         
@@ -120,7 +109,7 @@ export default function TourGuideManagement() {
             
           </div>
 
-        </div>
+        
       </div>
       </main>
     </div>
