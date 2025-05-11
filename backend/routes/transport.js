@@ -15,29 +15,32 @@ router.post("/", (req, res) => {
         });
 });
 
-router .get("/",(req,res)=>{
-    transport.find().then((transport)=>res.json(transport))
-    .catch((err)=>res.status(400).json({msg:"No transport details found"}));
+// Get all transport details
+router.get("/", (req, res) => {
+    transport.find()
+        .then((transport) => res.json(transport))
+        .catch((err) => res.status(400).json({ msg: "No transport details found" }));
 });
 
-router.get("/:id",(req,res) => {
-    transport
-        .findById(req.params.id)
-        .then((transport)=>res.json(transport))
-        .catch(()=>res.status(400).json({msg:"cannot find this details"}));
-
+// Get transport details by ID
+router.get("/:id", (req, res) => {
+    transport.findById(req.params.id)
+        .then((transport) => res.json(transport))
+        .catch(() => res.status(400).json({ msg: "Cannot find this detail" }));
 });
 
-router.put("/:id",(req,res)=>{
-    transport.findByIdAndUpdate(req.params.id,req.body).then(()=>
-      res.json({msg:"update succesfully"}).catch(()=>res.status(400).json({msg:"update failed"}))
-);
+// Update transport details by ID
+router.put("/:id", (req, res) => {
+    transport.findByIdAndUpdate(req.params.id, req.body)
+        .then(() => res.json({ msg: "Update successful" }))
+        .catch(() => res.status(400).json({ msg: "Update failed" }));
 });
 
-router.delete("/:id",(req,res)=>{
-    transport.findByIdAndDelete(req.params.id).then(()=>
-      res.json({msg:"delete succesfuly"})
-     .catch(()=>res.status(400).json({msg:"delete failed"})));
+// Delete transport details by ID
+router.delete("/:id", (req, res) => {
+    transport.findByIdAndDelete(req.params.id)
+        .then(() => res.json({ msg: "Delete successful" }))
+        .catch(() => res.status(400).json({ msg: "Delete failed" }));
 });
 
 module.exports = router;
