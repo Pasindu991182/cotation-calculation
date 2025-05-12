@@ -1,105 +1,78 @@
 const express = require("express");
+const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const Tours = require("../models/tours");
+const transport = require("../models/transport");
 
-const router = express.Router();
-
-// Multer Storage Configuration
+// Set up storage engine for Multer
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // You can change the folder as per your requirement
-        cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-        // Save the file with the current timestamp and its original extension
-        cb(null, Date.now() + path.extname(file.originalname));
-    },
+  destination: (req, file, cb) => {
+    cb(null, './uploads/'); // Directory where uploaded files will be stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename using current timestamp
+  }
 });
 
-// Multer file filter to allow only image files
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-
-    if (extname && mimetype) {
-        return cb(null, true);
-    } else {
-        cb("Error: Only image files are allowed");
-    }
-};
-
-// Multer upload middleware
+// Multer middleware to handle file upload
 const upload = multer({
-    storage,
-    fileFilter,
+  storage: storage,
+}).single('photo'); // 'photo' corresponds to the form field for the image
+
+// Test route
+router.get("/test", (req, res) => res.send("Transport routes working"));
+
+// Add new transport details with file upload
+router.post("/", (req, res) => {
+  upload(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ msg: "File upload failed", error: err.message });
+    }
+
+    const newTransport = new transport({
+      vehicleNo: req.body.vehicleNo,
+      vehicletype: req.body.vehicletype,
+      vehiclename: req.body.vehiclename,
+      seat: req.body.seat,
+      PriceKm: req.body.PriceKm,
+      drivername: req.body.drivername,
+      photo: req.file ? req.file.path : "", // Save the file path in the database
+    });
+
+    newTransport.save()
+      .then(() => res.json({ msg: "Transport details added successfully" }))
+      .catch((err) => {
+        console.error("Error adding transport details:", err);  // Log the error
+        res.status(400).json({ msg: "Details addition failed", error: err.message });
+      });
+  });
 });
 
-// POST route to add a new tour (with image upload)
-router.post("/", upload.single('photo'), (req, res) => {
-    // If a file is uploaded, save its URL to the database
-    const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
-    // Create a new tour with the uploaded file's URL
-    Tours.create({
-        ...req.body,
-        photo: photoUrl, // Save the uploaded photo URL in the database
-    })
-    .then(() => res.json({ msg: "Tour Added Successfully" }))
-    .catch(() => res.status(400).json({ msg: "Tour adding failed" }));
-});
-
-// GET route to fetch all tours
+// Get all transport details
 router.get("/", (req, res) => {
-    Tours.find()
-        .then((tours) => res.json(tours))
-        .catch(() => res.status(400).json({ msg: "Failed to fetch tours" }));
+  transport.find().then((transports) => res.json(transports))
+    .catch((err) => res.status(400).json({ msg: "No transport details found" }));
 });
 
+// Get transport details by ID
+router.get("/:id", (req, res) => {
+  transport.findById(req.params.id)
+    .then((transport) => res.json(transport))
+    .catch(() => res.status(400).json({ msg: "Cannot find this detail" }));
+});
 
+// Update transport details by ID
+router.put("/:id", (req, res) => {
+  transport.findByIdAndUpdate(req.params.id, req.body)
+    .then(() => res.json({ msg: "Update successful" }))
+    .catch(() => res.status(400).json({ msg: "Update failed" }));
+});
 
-
-router.put("/:id", async (req, res) => {
-    console.log("Received update request:", req.body);
-    try {
-      const updatedTour = await Tours.findOneAndUpdate(
-        { TourID: req.params.id },
-        req.body,
-        { new: true }
-      );
-      if (!updatedTour) {
-        return res.status(404).json({ msg: "Tour not found" });
-      }
-      res.json({ msg: "Updated successfully", updatedTour });
-    } catch (error) {
-      console.error("Update error:", error.message);
-      res.status(400).json({ msg: "Update failed", error: error.message });
-    }
-  });
-
-
-  // DELETE Tour Package by TourID
-  router.delete("/:id", async (req, res) => {
-    const cleanId = req.params.id.trim();
-    console.log("Received delete request for TourID:", cleanId);
-  
-    try {
-      const deletedTour = await Tours.findOneAndDelete({ TourID: cleanId });
-  
-      if (!deletedTour) {
-        return res.status(404).json({ msg: "Tour not found" });
-      }
-  
-      res.json({ msg: "Tour deleted successfully", deletedTour });
-    } catch (error) {
-      console.error("Delete error:", error.message);
-      res.status(500).json({ msg: "Deletion failed", error: error.message });
-    }
-  });
-  
-  
-  
-
+// Delete transport details by ID
+router.delete("/:id", (req, res) => {
+  transport.findByIdAndDelete(req.params.id)
+    .then(() => res.json({ msg: "Delete successful" }))
+    .catch(() => res.status(400).json({ msg: "Delete failed" }));
+});
 
 module.exports = router;

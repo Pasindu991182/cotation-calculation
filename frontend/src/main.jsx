@@ -33,7 +33,7 @@ const router = createBrowserRouter([
   // ========================= Admin Transport Side =========================
   { path: '/adminTransportManagement', element: <AdminTransport />, },
   { path:'/adminTransportManagement/addvehicle', element:<AdminAddvehicle/> },
-  { path:'/adminTransportManagement/updatevehicle', element:<AdminUpdatevehicle/> },
+  { path:'/adminTransportManagement/updatevehicle/:id', element:<AdminUpdatevehicle/> },
 
   { path: '/adminTourGuideManagement', element: <AdminTourGuide />, },
   { path: '/GuideT', element: <GuideTable />, },
