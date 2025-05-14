@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdSearch } from "react-icons/md";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import home from "../../.././assets/Background.jpg";
 import hotel1 from "../../.././assets/hotel1.jpg";
 import hotel2 from "../../.././assets/hotel2.webp";
@@ -9,6 +11,51 @@ import hotel5 from "../../.././assets/hotel5.jpg";
 
 const HotelPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedArea, setSelectedArea] = useState("all");
+  const [hotels, setHotels] = useState([]);
+  const [filteredHotels, setFilteredHotels] = useState([]);
+  const navigate = useNavigate();
+
+  // Fetch all hotels when component mounts
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/hotels");
+        // Filter only available hotels from the API response
+        const availableHotels = response.data.filter(hotel => hotel.available === true);
+        setHotels(availableHotels);
+        setFilteredHotels(availableHotels);
+      } catch (error) {
+        console.error("Error fetching hotels:", error);
+      }
+    };
+
+    fetchHotels();
+  }, []);
+
+  // Handle search and filter changes
+  useEffect(() => {
+    let results = hotels;
+
+    // Filter by search query (hotel name)
+    if (searchQuery) {
+      results = results.filter(hotel => 
+        hotel.hotelName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Filter by tour area
+    if (selectedArea !== "all") {
+      results = results.filter(hotel => hotel.tourArea === selectedArea);
+    }
+
+    setFilteredHotels(results);
+  }, [searchQuery, selectedArea, hotels]);
+
+  // Navigate to hotel details page
+  const handleViewDetails = (hotelId) => {
+    navigate(`/userHoteldetails/${hotelId}`);
+  };
 
   return (
     <div className="font-sans">
@@ -17,19 +64,19 @@ const HotelPage = () => {
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-4xl font-bold">Flamingo Tours</div>
           <nav className="flex space-x-6 text-lg">
-            <a href="#" className="hover:text-gray-200">
+            <a href="/TourPackage" className="hover:text-gray-200">
               Package
             </a>
-            <a href="#" className="hover:text-gray-200">
+            <a href="/Transport" className="hover:text-gray-200">
               Transport
             </a>
-            <a href="#" className="hover:text-gray-200">
+            <a href="/TourGide" className="hover:text-gray-200">
               Tour Guide
             </a>
-            <a href="#" className="hover:text-gray-200">
+            <a href="/userHotel" className="hover:text-gray-200">
               Hotels
             </a>
-            <a href="#" className="hover:text-gray-200">
+            <a href="/TourCotationCaculation" className="hover:text-gray-200">
               Quotation
             </a>
             <a href="#" className="hover:text-gray-200">
@@ -44,25 +91,22 @@ const HotelPage = () => {
 
       {/* Booking Section */}
       <section
-  className="bg-cover bg-center h-96 relative"
-  style={{ backgroundImage: `url(${hotel4})` }}
->
-  {/* Gradient Overlay with higher opacity */}
-  <div className="absolute inset-0 bg-gradient-to-r from-purple-200 via-pink-300 to-orange-500 opacity-70"></div>
-  
-  <div className="container mx-auto text-center py-24 relative z-10">
-    <h2 className="text-4xl font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-red-300 to-pink-200 mb-6 animate__animated animate__fadeIn text-blue-400">
-      Welcome to FlamingGO's Tour Quotation Calculator,
-    </h2>
-    <p className="text-2xl font-semibold text-gray-100 opacity-90 mb-6 leading-relaxed">
-      Where planning your dream vacation is just a click away. Get instant, accurate
-      quotes for customized tours tailored to your needs and budget.
-    </p>
-  </div>
-</section>
-
-
-
+        className="bg-cover bg-center h-96 relative"
+        style={{ backgroundImage: `url(${hotel4})` }}
+      >
+        {/* Gradient Overlay with higher opacity */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-200 via-pink-300 to-orange-500 opacity-70"></div>
+        
+        <div className="container mx-auto text-center py-24 relative z-10">
+          <h2 className="text-4xl font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-red-300 to-pink-200 mb-6 animate__animated animate__fadeIn text-blue-400">
+            Welcome to FlamingGO's Tour Quotation Calculator,
+          </h2>
+          <p className="text-2xl font-semibold text-gray-100 opacity-90 mb-6 leading-relaxed">
+            Where planning your dream vacation is just a click away. Get instant, accurate
+            quotes for customized tours tailored to your needs and budget.
+          </p>
+        </div>
+      </section>
 
       <section className="container mx-auto my-8 text-center" id="booking">
         <div className="bg-white shadow-lg p-8 rounded-lg">
@@ -74,50 +118,82 @@ const HotelPage = () => {
             <div className="flex justify-center space-x-4">
               <input
                 type="text"
-                placeholder="Enter hotel name or location"
+                placeholder="Enter hotel name"
                 className="p-2 rounded-md border border-gray-300 w-64"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
 
-              {/* Availability Filter */}
+              {/* Tour Area Filter */}
               <select
                 className="p-2 rounded-md border border-gray-300"
-                defaultValue="all"
+                value={selectedArea}
+                onChange={(e) => setSelectedArea(e.target.value)}
               >
-                <option value="all">All Hotels</option>
-                <option value="available">Available</option>
-                <option value="unavailable">Unavailable</option>
+                <option value="all">All Areas</option>
+                <option value="Down south">Down south</option>
+                <option value="North">North</option>
+                <option value="East">East</option>
               </select>
 
-              <button className="bg-orange-500 text-white px-6 py-2 rounded-lg">
-                Search
+              <button 
+                className="bg-orange-500 text-white px-6 py-2 rounded-lg"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedArea("all");
+                }}
+              >
+                Reset
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Our Room Section */}
+      {/* Our Hotels Section */}
       <section id="rooms" className="container mx-auto py-16">
-        <h2 className="text-3xl font-semibold text-center mb-8">Our Hotels</h2>
+        <h2 className="text-3xl font-semibold text-center mb-8">Available Hotels</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {["Family Hotel", "Luxury Hotel", "Deluxe Hotel"].map((Hotel, idx) => (
-            <div key={idx} className="bg-white shadow-md rounded-lg">
-              <img
-                src={hotel1}
-                alt="Room"
-                className="w-full h-64 object-cover rounded-t-lg"
-              />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold">{Hotel}</h3>
-                <p className="text-lg text-gray-600">
-                  Starting from $199 per night
-                </p>
-                <button className="bg-orange-500 text-white py-2 px-4 rounded-md mt-4">
-                  Detailes
-                </button>
+          {filteredHotels.length > 0 ? (
+            filteredHotels.map((hotel) => (
+              <div key={hotel._id} className="bg-white shadow-md rounded-lg">
+                <img
+                  src={hotel.images && hotel.images.length > 0 
+                    ? `http://localhost:3000${hotel.images[0]}` 
+                    : hotel1}
+                  alt={hotel.hotelName}
+                  className="w-full h-64 object-cover rounded-t-lg"
+                />
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold">{hotel.hotelName}</h3>
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-lg text-gray-600">
+                      Starting from ${hotel.roomPrice} per night
+                    </p>
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                      Available
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    {hotel.hotelAddress}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {hotel.tourArea} • Hotel ID: {hotel.hotelId}
+                  </p>
+                  <button 
+                    className="bg-orange-500 text-white py-2 px-4 rounded-md mt-4 w-full hover:bg-orange-600 transition-colors"
+                    onClick={() => handleViewDetails(hotel._id)}
+                  >
+                    View Details
+                  </button>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="col-span-3 text-center py-8">
+              <p className="text-xl text-gray-500">No hotels found matching your criteria.</p>
             </div>
-          ))}
+          )}
         </div>
       </section>
 
