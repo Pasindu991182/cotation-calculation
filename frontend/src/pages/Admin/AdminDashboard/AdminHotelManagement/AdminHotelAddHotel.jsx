@@ -18,6 +18,14 @@ const AddHotel = () => {
   const [roomPrice, setRoomPrice] = useState("");
   const [roomDescription, setRoomDescription] = useState("");
   const [images, setImages] = useState([]);
+  // New state for hotelId and available
+  const [hotelId, setHotelId] = useState(generateHotelId());
+  const [available, setAvailable] = useState(true);
+
+  // Function to generate a random 6-digit hotel ID
+  function generateHotelId() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
 
   // Define state for amenities
   const [amenities, setAmenities] = useState({
@@ -101,9 +109,9 @@ const AddHotel = () => {
       return false;
     }
 
-    // Validate roomPrice (Rs. 10,000 or greater)
-    if (roomPrice < 10000) {
-      alert("Room price must be Rs. 10,000 or greater.");
+    // Validate roomPrice ($. 10or greater)
+    if (roomPrice <10) {
+      alert("Room price must be $10 or greater.");
       return false;
     }
 
@@ -129,6 +137,9 @@ const AddHotel = () => {
     formData.append("roomDescription", roomDescription);
     formData.append("amenities", JSON.stringify(amenities));
     formData.append("accessibility", JSON.stringify(accessibility));
+    // Add new fields
+    formData.append("hotelId", hotelId);
+    formData.append("available", available);
 
     // Append images to formData
     images.forEach((image) => {
@@ -215,6 +226,34 @@ const AddHotel = () => {
                       className="hidden"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Hotel ID Section (New) */}
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block mb-2 font-medium text-gray-700">
+                    Hotel ID (Auto-generated)
+                  </label>
+                  <input
+                    type="text"
+                    value={hotelId}
+                    readOnly
+                    className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium text-gray-700">
+                    Availability Status
+                  </label>
+                  <select
+                    value={available.toString()}
+                    onChange={(e) => setAvailable(e.target.value === "true")}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="true">Available</option>
+                    <option value="false">Unavailable</option>
+                  </select>
                 </div>
               </div>
 
@@ -327,7 +366,7 @@ const AddHotel = () => {
                     value={roomPrice}
                     onChange={(e) => setRoomPrice(e.target.value)}
                     required
-                    min="10000"
+                    min="10"
                     className="w-full p-2 border border-gray-300 rounded-md"
                   />
                 </div>
@@ -416,6 +455,7 @@ const AddHotel = () => {
                 <button
                   type="button"
                   className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400"
+                  onClick={() => navigate("/adminHotelManagement")}
                 >
                   Cancel
                 </button>

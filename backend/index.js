@@ -7,6 +7,9 @@ const guideR= require("./routes/g")
 const tourRoutes = require("./routes/tours");
 const transportRoutes = require("./routes/transport");
 const hotelRoutes = require("./routes/Hotel"); // Hotel routes
+const medicalConsiderationRouter = require("./routes/medicalConsiderationRoute");
+const quotationRouter = require("./routes/quotationRoutes");
+const userRouter = require("./routes/userRoute");
 const PORT = 3000;
 
 const app = express();
@@ -31,9 +34,10 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/tours", tourRoutes);
 app.use("/api/transport", transportRoutes);
 app.use("/api/guide", guideR);
+app.use("/api/quotation", quotationRouter);
+app.use("/api/medicalconsideration", medicalConsiderationRouter);
 app.use("/api/hotels", hotelRoutes); // Hotel routes
-
-app.use("/api/tours", tourRoutes); // Tour routes
+app.use("/api/user", userRouter); // Hotel routes
 
 
 

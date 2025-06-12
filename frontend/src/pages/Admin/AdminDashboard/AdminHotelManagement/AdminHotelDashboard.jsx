@@ -322,7 +322,7 @@ const HotelsManagement = () => {
               <tbody>
                 {getTabData().map((hotel) => (
                   <tr key={hotel._id} className="text-center">
-                    <td className="p-2 border">{hotel._id}</td>
+                    <td className="p-2 border">{hotel.hotelId}</td>
                     <td className="p-2 border">{hotel.hotelName}</td>
                     <td className="p-2 border">{hotel.hotelType}</td>
                     <td className="p-2 border">{hotel.hotelTelNo}</td>

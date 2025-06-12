@@ -1,12 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Transition from "../../components/Transition";
 import Background from "../../assets/background3.png";
 import "./Login.css";
 import Logo from "../../assets/K_5.mp4"; // Import the advanced Transition
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+  const navigate = useNavigate();
 
   // Function to handle focus and blur events
   const handleFocus = (e) => {
@@ -20,6 +29,41 @@ const Login = () => {
       e.target.classList.remove("focus");
     }
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handlelogin = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post("http://localhost:3000/api/user/login", formData);
+    if (response.data) {
+      // Store token and user data in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      toast.success("Login successful!");
+      
+      if (response.data.user.role === "user") {
+        navigate("/TourPackage");
+      } else if (response.data.user.role === "admin") {
+        navigate("/adminUserManagement");
+      } else {
+        navigate("/login");
+      }
+    } else {
+      toast.error("Invalid username or password");
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Invalid username or password");
+    console.error("Error during login:", error);
+  }
+};
 
   // This will trigger the focus class for autofilled fields on page refresh
   const triggerAutofillAnimation = () => {
@@ -95,10 +139,10 @@ const Login = () => {
                       Sign in to access your account
                     </p>
                   </div>
-
+                  <ToastContainer position="top-right" autoClose={3000} />
                   {/* Sign-in Form */}
                   <div className="mt-8 lg:w-6/6">
-                    <form>
+                    <form onSubmit={handlelogin}>
                       {/* Email Address */}
                       <div>
                         <label
@@ -110,6 +154,8 @@ const Login = () => {
                             type="email"
                             name="email"
                             id="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
                             className="block w-full px-6 py-2 mt-2 text-gray-700 bg-white border-2 border-gray-200 rounded-lg outline-none border-opacity-50 focus:border-blue-400"
                             onFocus={handleFocus}
                             onBlur={handleBlur}
@@ -139,6 +185,8 @@ const Login = () => {
                             type="password"
                             name="password"
                             id="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
                             className="block w-full px-6 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                             onFocus={handleFocus}
                             onBlur={handleBlur}

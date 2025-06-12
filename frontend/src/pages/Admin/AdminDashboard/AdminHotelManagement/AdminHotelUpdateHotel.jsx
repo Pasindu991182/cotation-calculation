@@ -6,10 +6,11 @@ import axios from "axios"; // Importing Axios
 import { useParams, useNavigate } from "react-router-dom"; // Import useParams and useNavigate
 
 const EditHotel = () => {
-  const { hotelId } = useParams(); // Get hotel ID from URL params
+  const { hotelId: id } = useParams(); // Get hotel ID from URL params
   const navigate = useNavigate(); // Use navigate hook for navigation
 
   // States to manage hotel data and image uploads
+  const [hotelId, sethotelId] = useState("");
   const [hotelName, setHotelName] = useState("");
   const [hotelAddress, setHotelAddress] = useState("");
   const [hotelTelNo, setHotelTelNo] = useState("");
@@ -21,6 +22,10 @@ const EditHotel = () => {
   const [roomDescription, setRoomDescription] = useState("");
   const [backendImages, setBackendImages] = useState([]); // Separate state for backend images
   const [newImages, setNewImages] = useState([]); // Separate state for new images
+  // New state variables for hotelId and available
+  const [hotelIdValue, setHotelIdValue] = useState("");
+  const [available, setAvailable] = useState(true);
+
   const [amenities, setAmenities] = useState({
     petFriendly: false,
     smoking: false,
@@ -44,27 +49,36 @@ const EditHotel = () => {
   // Fetch hotel data on component mount
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/hotels/${hotelId}`)
+      .get(`http://localhost:3000/api/hotels/${id}`)
       .then((response) => {
         const hotel = response.data;
+        sethotelId(hotel.hotelId);
         setHotelName(hotel.hotelName);
         setHotelAddress(hotel.hotelAddress);
         setHotelTelNo(hotel.hotelTelNo);
         setHotelType(hotel.hotelType);
         setHotelCategory(hotel.hotelCategory);
         setTourArea(hotel.tourArea);
-        setRoomCapacity(hotel.roomCapacity);
+        setRoomCapacity(hotel.hotelCapacity);
         setRoomPrice(hotel.roomPrice);
         setRoomDescription(hotel.roomDescription);
         setAmenities(hotel.amenities);
         setAccessibility(hotel.accessibility);
         setBackendImages(hotel.images); // Store backend images separately
+
+        // Set the new fields if they exist in the response
+        if (hotel.hotelId) {
+          setHotelIdValue(hotel.hotelId);
+        }
+        if (hotel.available !== undefined) {
+          setAvailable(hotel.available);
+        }
       })
       .catch((error) => {
         console.error("Error fetching hotel data:", error);
         alert("There was an error loading the hotel data.");
       });
-  }, [hotelId]);
+  }, [id]);
 
   // Handle image upload (new images)
   const handleImageUpload = (e) => {
@@ -108,7 +122,17 @@ const EditHotel = () => {
 
   // Validate form fields before submitting
   const validateForm = () => {
-    if (!hotelName || !hotelAddress || !hotelTelNo || !hotelType || !hotelCategory || !tourArea || !roomCapacity || !roomPrice || !roomDescription) {
+    if (
+      !hotelName ||
+      !hotelAddress ||
+      !hotelTelNo ||
+      !hotelType ||
+      !hotelCategory ||
+      !tourArea ||
+      !roomCapacity ||
+      !roomPrice ||
+      !roomDescription
+    ) {
       alert("Please fill out all required fields.");
       return false;
     }
@@ -127,8 +151,8 @@ const EditHotel = () => {
     }
 
     // Validate roomPrice (Rs. 10,000 or greater)
-    if (roomPrice < 10000) {
-      alert("Room price must be Rs. 10,000 or greater.");
+    if (roomPrice < 50) {
+      alert("Room price must be $50 or greater.");
       return false;
     }
 
@@ -154,6 +178,9 @@ const EditHotel = () => {
     formData.append("roomDescription", roomDescription);
     formData.append("amenities", JSON.stringify(amenities));
     formData.append("accessibility", JSON.stringify(accessibility));
+    // Add new fields
+    formData.append("hotelId", hotelIdValue);
+    formData.append("available", available);
 
     // Append both backend and new images to formData
     backendImages.forEach((image) => {
@@ -165,7 +192,7 @@ const EditHotel = () => {
 
     try {
       // Send PUT request to backend to update hotel data
-      await axios.put(`http://localhost:3000/api/hotels/${hotelId}`, formData, {
+      await axios.put(`http://localhost:3000/api/hotels/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Important to set this for file upload
         },
@@ -200,9 +227,7 @@ const EditHotel = () => {
                 {/* Backend Images Section */}
                 {backendImages.length > 0 && (
                   <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-4">
-                      Added Images
-                    </h3>
+                    <h3 className="text-xl font-semibold mb-4">Added Images</h3>
                     <div className="flex overflow-x-auto py-2 space-x-4">
                       {backendImages.map((image, index) => (
                         <div key={index} className="relative w-40 h-40">
@@ -218,48 +243,78 @@ const EditHotel = () => {
                 )}
                 <h3 className="text-xl font-semibold mb-4">New Images</h3>
                 <div className="w-full max-w-[700px] overflow-x-auto">
-                <div className="flex space-x-4 py-2 flex-nowrap">
-                  
-                  {/* New Images Section */}
-                  {newImages.length > 0 && (
-                    <div className="mb-6">
-                      <div className="flex overflow-x-auto py-2 space-x-4">
-                        {newImages.map((image, index) => (
-                          <div key={index} className="relative w-40 h-40">
-                            <img
-                              src={handleImagePreview(image)} // Preview new image
-                              alt={`New Hotel Pic ${index + 1}`}
-                              className="object-cover w-full h-full rounded-lg"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleImageRemove(index)} // Remove new image
-                              className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
-                            >
-                              <MdCancel />
-                            </button>
-                          </div>
-                        ))}
+                  <div className="flex space-x-4 py-2 flex-nowrap">
+                    {/* New Images Section */}
+                    {newImages.length > 0 && (
+                      <div className="mb-6">
+                        <div className="flex overflow-x-auto py-2 space-x-4">
+                          {newImages.map((image, index) => (
+                            <div key={index} className="relative w-40 h-40">
+                              <img
+                                src={handleImagePreview(image)} // Preview new image
+                                alt={`New Hotel Pic ${index + 1}`}
+                                className="object-cover w-full h-full rounded-lg"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleImageRemove(index)} // Remove new image
+                                className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+                              >
+                                <MdCancel />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Add New Image */}
-                  <label
-                    htmlFor="image-upload"
-                    className="w-40 h-40 border-2 border-dashed border-gray-400 flex justify-center items-center rounded-lg cursor-pointer min-w-[160px]"
-                  >
-                    <MdAdd size={24} className="text-gray-500" />
+                    {/* Add New Image */}
+                    <label
+                      htmlFor="image-upload"
+                      className="w-40 h-40 border-2 border-dashed border-gray-400 flex justify-center items-center rounded-lg cursor-pointer min-w-[160px]"
+                    >
+                      <MdAdd size={24} className="text-gray-500" />
+                    </label>
+                    <input
+                      type="file"
+                      id="image-upload"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Hotel ID and Availability Section (New) */}
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block mb-2 font-medium text-gray-700">
+                    Hotel ID
                   </label>
                   <input
-                    type="file"
-                    id="image-upload"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageUpload}
-                    className="hidden"
+                    type="text"
+                    value={hotelIdValue}
+                    readOnly
+                    className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
                   />
-                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Hotel ID cannot be changed
+                  </p>
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium text-gray-700">
+                    Availability Status
+                  </label>
+                  <select
+                    value={available.toString()}
+                    onChange={(e) => setAvailable(e.target.value === "true")}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="true">Available</option>
+                    <option value="false">Unavailable</option>
+                  </select>
                 </div>
               </div>
 
@@ -369,7 +424,7 @@ const EditHotel = () => {
                     value={roomPrice}
                     onChange={(e) => setRoomPrice(e.target.value)}
                     required
-                    min="10000"
+                    min="10"
                     className="w-full p-2 border border-gray-300 rounded-md"
                   />
                 </div>
@@ -458,6 +513,7 @@ const EditHotel = () => {
                 <button
                   type="button"
                   className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400"
+                  onClick={() => navigate("/adminHotelManagement")}
                 >
                   Cancel
                 </button>

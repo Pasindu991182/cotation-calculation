@@ -1,87 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import SideNavbar from "./../../../../components/AdminDashboard/Navbar";
 import Header from "./../../../../components/AdminDashboard/Header";
 import { MdAdd, MdCancel, MdSearch, MdEdit, MdDelete } from "react-icons/md";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { jsPDF } from "jspdf";
+import axios from "axios";
+import autoTable from "jspdf-autotable";
+import { FaFilePdf } from "react-icons/fa";
 
-
+const API_URL = "http://localhost:3000/api/transport"; // Your backend API URL
 
 // Register necessary chart elements
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export function TransportManagement() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
-  const [vehicles, setVehicles] = useState([
-    { id: "QB5329", vehicleName: "Bus 001", vehicleType: "Luxury", mobileNo: "0771231236", capacity: 50, availability: "Unavailable", price: 5000 },
-    { id: "ABG8530", vehicleName: "Van 023", vehicleType: "Deluxe", mobileNo: "0771231248", capacity: 20, availability: "Available", price: 3000 },
-    { id: "BCQ2061", vehicleName: "Car 108", vehicleType: "Standard", mobileNo: "0771242736", capacity: 5, availability: "Available", price: 1500 },
-  ]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentVehicle, setCurrentVehicle] = useState(null);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-
   const topVehicles = [
-    { name: "Bus 001", revenue: "$12,340", trips: 156, occupancy: "90%", rating: 4.9 },
-    { name: "Van 023", revenue: "$8,750", trips: 120, occupancy: "85%", rating: 4.7 },
-    { name: "Car 108", revenue: "$6,250", trips: 100, occupancy: "80%", rating: 4.6 },
-
-    
+    {
+      name: "Bus 001",
+      revenue: "$12,340",
+      trips: 156,
+      occupancy: "90%",
+      rating: 4.9,
+    },
+    {
+      name: "Van 023",
+      revenue: "$8,750",
+      trips: 120,
+      occupancy: "85%",
+      rating: 4.7,
+    },
+    {
+      name: "Car 108",
+      revenue: "$6,250",
+      trips: 100,
+      occupancy: "80%",
+      rating: 4.6,
+    },
   ];
-
-  const handleAddNewVehicle = () => {
-    setCurrentVehicle({ id: "", vehicleName: "", vehicleType: "", capacity: "", availability: "Available", price: "", photoUrl: "" });
-    setIsModalOpen(true);
-  };
-
-  const handleSaveChanges = () => {
-    if (currentVehicle.id) {
-      const updatedVehicles = vehicles.map((vehicle) => vehicle.id === currentVehicle.id ? currentVehicle : vehicle);
-      setVehicles(updatedVehicles);
-    } else {
-      setVehicles([...vehicles, { ...currentVehicle, id: Math.random().toString(36).substr(2, 9) }]);
-    }
-    setIsModalOpen(false);
-  };
-
-  const getTabData = () => {
-    let data = vehicles;
-    if (activeTab === "available") data = vehicles.filter((v) => v.availability === "Available");
-    if (activeTab === "booked") data = vehicles.filter((v) => v.availability === "Unavailable");
-    return data.filter((vehicle) => vehicle.vehicleName.toLowerCase().includes(searchQuery.toLowerCase()));
-  };
-
- 
-
-  const handleUpdateVehicle = (vehicle) => {
-    setCurrentVehicle(vehicle);
-    setIsModalOpen(true);
-  };
-
- 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentVehicle((prevVehicle) => ({
-      ...prevVehicle,
-      [name]: value,
-    }));
-  };
-
-  const handleDeleteVehicle = (vehicleId) => {
-    const updatedVehicles = vehicles.filter((vehicle) => vehicle.id !== vehicleId);
-    setVehicles(updatedVehicles);
-    setIsDeleteConfirmOpen(false); // Close confirmation modal
-  };
-
-  const openDeleteConfirmation = (vehicle) => {
-    setCurrentVehicle(vehicle);
-    setIsDeleteConfirmOpen(true);
-  };
 
   // Example data for Monthly Booking Distribution (hypothetical data)
   const monthlyBookingData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [
       {
         label: "Trips",
@@ -111,6 +100,122 @@ export function TransportManagement() {
     },
   };
 
+  const [vehicles, setVehicles] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [seatFilter, setSeatFilter] = useState("");
+
+  useEffect(() => {
+    axios
+      .get(API_URL)
+      .then((response) => {
+        setVehicles(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching vehicles:", error);
+      });
+  }, []);
+
+  const filteredVehicles = vehicles.filter((vehicle) => {
+    const matchesSearchQuery = vehicle.vehiclename
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesSeatFilter = seatFilter
+      ? parseInt(vehicle.seat) >= parseInt(seatFilter)
+      : true;
+    return matchesSearchQuery && matchesSeatFilter;
+  });
+
+  const handleDeleteVehicle = async (vehicleId) => {
+    try {
+      const confirmDelete = window.confirm("Are you sure you want to delete this Vehicle?");
+      if (confirmDelete) {
+        await axios.delete(`${API_URL}/${vehicleId}`);
+        setVehicles(vehicles.filter((vehicle) => vehicle._id !== vehicleId));
+        alert("Vehicle deleted successfully.");
+        window.location.href = "/adminTransportManagement";
+      }
+    } catch (err) {
+      console.error("Error deleting vehicle:", err);
+      alert("Failed to delete vehicle.");
+    }
+  };
+  
+
+  const generatePDF = () => {
+    try {
+      const doc = new jsPDF();
+
+      // Title
+      doc.setFontSize(18);
+      doc.text("Transport Vehicle Summary", 14, 20);
+
+      // Total vehicles
+      doc.setFontSize(12);
+      doc.text(`Total Vehicles: ${vehicles.length}`, 14, 30);
+
+      // Column headers
+      const tableColumn = [
+        "Vehicle No",
+        "Vehicle Name",
+        "Vehicle Type",
+        "Seats",
+        "Price per Km",
+        "Images",
+      ];
+
+      // Prepare row data (we’ll ignore the “Image” text cell)
+      const tableRows = vehicles.map((v) => [
+        v.vehicleNo || "N/A",
+        v.vehiclename || "N/A",
+        v.vehicletype || "N/A",
+        v.seat || "N/A",
+        v.PriceKm || "N/A",
+        "", // leave blank; image will go here
+      ]);
+
+      // Generate table
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 40,
+        styles: {
+          halign: "center", // Center align all cell content
+          cellPadding: { top: 8, bottom: 8 },
+        },
+        theme: "striped",
+        headStyles: { fillColor: [22, 160, 133], halign: "center" }, // Also center align headers
+        margin: { top: 50, left: 10, right: 10 },
+        columnStyles: {
+          5: { cellWidth: 30, halign: "center", valign: "middle" }, // Image column
+        },
+        didDrawCell: (data) => {
+          if (data.section === "body" && data.column.index === 5) {
+            const vehicle = vehicles[data.row.index];
+            if (vehicle.photo) {
+              const imgUrl = `http://localhost:3000/${vehicle.photo}`;
+              const imgWidth = 15;
+              const imgHeight = 15;
+              const x = data.cell.x + (data.cell.width - imgWidth) / 2;
+              const y = data.cell.y + (data.cell.height - imgHeight) / 2;
+
+              try {
+                doc.addImage(imgUrl, "JPEG", x, y, imgWidth, imgHeight);
+              } catch (e) {
+                console.warn("Couldn't load image for row", data.row.index, e);
+              }
+            }
+          }
+        },
+      });
+
+      doc.save("transport-vehicle-summary.pdf");
+      alert("PDF generated successfully!");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Check console for details.");
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       <SideNavbar />
@@ -122,128 +227,146 @@ export function TransportManagement() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold">Transport Management</h2>
               <div className="flex space-x-2">
-                <button className="px-4 py-2 bg-gray-200 rounded">Select Month</button>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded">Generate Report</button>
+                <button className="px-4 py-2 bg-gray-200 rounded">
+                  Select Month
+                </button>
+                <button className="px-4 py-2 bg-blue-600 text-white rounded">
+                  Generate Report
+                </button>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-6 mb-6">
               <div className="p-4 bg-white rounded shadow">
                 <h3 className="text-gray-500">Monthly Revenue</h3>
-                <p className="text-2xl font-semibold">$124,563 <span className="text-green-500 text-sm">+2.5%</span></p>
+                <p className="text-2xl font-semibold">
+                  $124,563 <span className="text-green-500 text-sm">+2.5%</span>
+                </p>
               </div>
               <div className="p-4 bg-white rounded shadow">
                 <h3 className="text-gray-500">Total Trips</h3>
-                <p className="text-2xl font-semibold">1,248 <span className="text-green-500 text-sm">+3.2%</span></p>
+                <p className="text-2xl font-semibold">
+                  1,248 <span className="text-green-500 text-sm">+3.2%</span>
+                </p>
               </div>
               <div className="p-4 bg-white rounded shadow">
                 <h3 className="text-gray-500">Occupancy Rate</h3>
-                <p className="text-2xl font-semibold">84% <span className="text-red-500 text-sm">-2%</span></p>
+                <p className="text-2xl font-semibold">
+                  84% <span className="text-red-500 text-sm">-2%</span>
+                </p>
               </div>
             </div>
 
-           {/* Booking Overview Chart */}
+            {/* Booking Overview Chart */}
             <div className="mb-6 bg-white p-5 shadow rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">Booking Overview</h3> {/* Updated Label Name */}
+              <h3 className="text-lg font-semibold mb-2">Booking Overview</h3>{" "}
+              {/* Updated Label Name */}
               <div className="space-x-4 mb-4">
                 <label className="text-gray-700">
-                  <input type="radio" name="dist" defaultChecked className="mr-1" /> OTA
+                  <input
+                    type="radio"
+                    name="dist"
+                    defaultChecked
+                    className="mr-1"
+                  />{" "}
+                  OTA
                 </label>
                 <label className="text-gray-700">
                   <input type="radio" name="dist" className="mr-1" /> Corporate
                 </label>
               </div>
+              {/* Booking Overview Chart */}
+              <div className="w-full h-64">
+                <Bar
+                  data={{
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                    datasets: monthlyBookingData.datasets,
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { position: "top" },
+                      title: { display: false },
+                    },
+                    scales: { y: { beginAtZero: true } },
+                  }}
+                />
+              </div>
+            </div>
 
-                {/* Booking Overview Chart */}
-                <div className="w-full h-64">
-                  <Bar
-                    data={{
-                      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-                      datasets: monthlyBookingData.datasets,
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: { position: "top" },
-                        title: { display: false },
-                      },
-                      scales: { y: { beginAtZero: true } },
-                    }}
+            {/* Top Performance Vehicles Table */}
+            <div className="mb-6">
+              <h3 className="text-2xl font-semibold mb-4">
+                Top Performance Vehicles
+              </h3>
+              <table className="w-full border-collapse border border-gray-200">
+                <thead>
+                  <tr className="bg-gray-200 text-center">
+                    <th className="p-2 border">Vehicle Name</th>
+                    <th className="p-2 border">Revenue</th>
+                    <th className="p-2 border">Total Trips</th>
+                    <th className="p-2 border">Occupancy Rate</th>
+                    <th className="p-2 border">Rating</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topVehicles.map((vehicle, idx) => (
+                    <tr key={idx} className="text-center">
+                      <td className="p-2 border">{vehicle.name}</td>
+                      <td className="p-2 border">{vehicle.revenue}</td>
+                      <td className="p-2 border">{vehicle.trips}</td>
+                      <td className="p-2 border">{vehicle.occupancy}</td>
+                      <td className="p-2 border">{vehicle.rating} ⭐</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Search and Filter Inputs */}
+            <div className="flex items-center justify-between mb-4 mt-17">
+              <div className="flex space-x-4 mb-6">
+                <div
+                  className="flex-1"
+                  style={{ maxWidth: "500px", minWidth: "400px" }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Search by Vehicle Name"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex-1" style={{ maxWidth: "200px" }}>
+                  <input
+                    type="number"
+                    placeholder="Filter by Seat Capacity"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={seatFilter}
+                    onChange={(e) => setSeatFilter(e.target.value)}
                   />
                 </div>
               </div>
-
-    
-
-              {/* Top Performance Vehicles Table */}
-                <div className="mb-6">
-                  <h3 className="text-2xl font-semibold mb-4">Top Performance Vehicles</h3>
-                  <table className="w-full border-collapse border border-gray-200">
-                    <thead>
-                      <tr className="bg-gray-200 text-center">
-                        <th className="p-2 border">Vehicle Name</th>
-                        <th className="p-2 border">Revenue</th>
-                        <th className="p-2 border">Total Trips</th>
-                        <th className="p-2 border">Occupancy Rate</th>
-                        <th className="p-2 border">Rating</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {topVehicles.map((vehicle, idx) => (
-                        <tr key={idx} className="text-center">
-                          <td className="p-2 border">{vehicle.name}</td>
-                          <td className="p-2 border">{vehicle.revenue}</td>
-                          <td className="p-2 border">{vehicle.trips}</td>
-                          <td className="p-2 border">{vehicle.occupancy}</td>
-                          <td className="p-2 border">{vehicle.rating} ⭐</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-
-                      {/* Transport Filter Buttons */}
-                      <div className="flex space-x-4 mb-4">
-                        <button
-                          className={`px-4 py-2 rounded ${activeTab === "all" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
-                          onClick={() => setActiveTab("all")}
-                        >
-                          All Vehicles
-                        </button>
-                        <button
-                          className={`px-4 py-2 rounded ${activeTab === "available" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
-                          onClick={() => setActiveTab("available")}
-                        >
-                          Available Vehicles
-                        </button>
-                        <button
-                          className={`px-4 py-2 rounded ${activeTab === "booked" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
-                          onClick={() => setActiveTab("booked")}
-                        >
-                          Booked Vehicles
-                        </button>
-                      </div>
-                      
-
-                      <div className="flex items-center justify-between mb-4">
-                        <input
-                          type="text"
-                          placeholder="Search vehicle..."
-                          className="border px-3 py-2 rounded-lg"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-
-                        <button onClick={handleAddNewVehicle} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                          + Add a new Vehicle
-                        </button>
-                      </div>
-                      
-
-            {/*All vehicle*/}      
-            <h2 className="text-2xl font-semibold text-left">All Vehicles</h2>
+              <div className="flex gap-4">
+                <Link to="/adminTransportManagement/addvehicle">
+                  <button className="bg-green-600  text-white px-4 py-2 hover:bg-emerald-700 rounded-lg self-start">
+                    + Add New Vehicle
+                  </button>
+                </Link>
+                <button
+                  onClick={generatePDF}
+                  className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
+                >
+                  <FaFilePdf /> Generate PDF Summary
+                </button>
+              </div>
+            </div>
+            {/*All vehicle*/}
+            <h2 className="text-2xl font-semibold text-left mb-6 ms-4">
+              All Vehicles
+            </h2>
 
             <table className="w-full border-collapse border border-gray-200">
               <thead>
@@ -252,177 +375,50 @@ export function TransportManagement() {
                   <th className="p-2 border">Vehicle Name</th>
                   <th className="p-2 border">Vehicle Type</th>
                   <th className="p-2 border">Seat</th>
-                  <th className="p-2 border">Availability</th>
                   <th className="p-2 border">Price (Km)</th>
-                  <th className="p-2 border">Photo</th>
+                  <th className="p-2 border">Image</th>
                   <th className="p-2 border">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {getTabData().map((vehicle, idx) => (
-                  <tr key={idx} className="text-center">
-                    <td className="p-2 border">{vehicle.id}</td>
-                    <td className="p-2 border">{vehicle.vehicleName}</td>
-                    <td className="p-2 border">{vehicle.vehicleType}</td>
-                    <td className="p-2 border">{vehicle.capacity}</td>
-                    <td className={`p-2 border ${vehicle.availability === "Available" ? "text-green-500" : "text-red-500"}`}>{vehicle.availability}</td>
-                    <td className="p-2 border">{vehicle.price}</td>
+                {filteredVehicles.map((vehicle) => (
+                  <tr key={vehicle._id} className="text-center">
+                    <td className="p-2 border">{vehicle.vehicleNo}</td>
+                    <td className="p-2 border">{vehicle.vehiclename}</td>
+                    <td className="p-2 border">{vehicle.vehicletype}</td>
+                    <td className="p-2 border">{vehicle.seat}</td>
+                    <td className="p-2 border">{vehicle.PriceKm}</td>
                     <td className="p-2 border">
-                      <img src={vehicle.photoUrl} alt="Vehicle" className="w-16 h-16 object-cover rounded-md mx-auto" />
+                      {vehicle.photo ? (
+                        <img
+                          src={`http://localhost:3000/${vehicle.photo}`}
+                          alt="Vehicle"
+                          className="w-16 h-16 object-cover rounded-md mx-auto"
+                        />
+                      ) : (
+                        <span>No Image</span>
+                      )}
                     </td>
+
                     <td className="p-2 border">
-                      <div className="flex justify-center space-x-2">
-                        <button
-                          className="flex items-center space-x-1 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                          onClick={() => handleUpdateVehicle(vehicle)}
-                        >
-                          <MdEdit size={16} /> <span>Update</span>
+                      <Link
+                        to={`/adminTransportManagement/updatevehicle/${vehicle._id}`}
+                      >
+                        <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                          Edit
                         </button>
-                        <button
-                          className="flex items-center space-x-1 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                          onClick={() => openDeleteConfirmation(vehicle)}
-                        >
-                          <MdDelete size={16} /> <span>Delete</span>
-                        </button>
-                      </div>
+                      </Link>
+                      <button
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 ml-2"
+                        onClick={() => handleDeleteVehicle(vehicle._id)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-
-            {/* Modal for updating vehicle */}
-                  {isModalOpen && currentVehicle && (
-        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-2xl font-semibold mb-4">Update Vehicle</h3>
-            <div className="mb-4">
-              <label className="block mb-2">Vehicle No</label>
-              <input
-                type="text"
-                name="id"
-                value={currentVehicle.id}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Vehicle Name</label>
-              <input
-                type="text"
-                name="vehicleName"
-                value={currentVehicle.vehicleName}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Vehicle Type</label>
-              <input
-                type="text"
-                name="vehicleType"
-                value={currentVehicle.vehicleType}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Capacity</label>
-              <input
-                type="number"
-                name="capacity"
-                value={currentVehicle.capacity}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Price</label>
-              <input
-                type="number"
-                name="price"
-                value={currentVehicle.price}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            
-                {/* Photo Upload Field */}
-                <div className="mb-4">
-                  <label className="block mb-2">Vehicle Photo</label>
-                  <input
-                    type="file"
-                    name="photoUrl"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setCurrentVehicle((prevVehicle) => ({
-                            ...prevVehicle,
-                            photoUrl: reader.result, // Update photoUrl with the image data
-                          }));
-                        };
-                        reader.readAsDataURL(file); // Convert image to base64 string
-                      }
-                    }}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                  {currentVehicle.photoUrl && (
-                    <div className="mt-2">
-                      <img
-                        src={currentVehicle.photoUrl}
-                        alt="Vehicle Preview"
-                        className="w-20 h-20 object-cover rounded-md"
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-400 text-white px-4 py-2 rounded-lg"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveChanges}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-            {/* Delete Confirmation Modal */}
-            {isDeleteConfirmOpen && currentVehicle && (
-              <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                  <h3 className="text-2xl font-semibold mb-4">Are you sure you want to delete this vehicle?</h3>
-                  <p className="mb-4">
-                    Vehicle Name: {currentVehicle.vehicleName}
-                    <br />
-                    Vehicle No: {currentVehicle.id}
-                  </p>
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => setIsDeleteConfirmOpen(false)}
-                      className="bg-gray-400 text-white px-4 py-2 rounded-lg"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => handleDeleteVehicle(currentVehicle.id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded-lg"
-                    >
-                      Confirm Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </main>
       </div>

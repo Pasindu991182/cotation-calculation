@@ -1,22 +1,24 @@
-const Hotel = require('../models/Hotel');
+const Hotel = require("../models/Hotel");
 
 // Add new hotel
 exports.createHotel = async (req, res) => {
   try {
     // Check if files exist, otherwise set an empty array for images
-    const imagePaths = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
+    const imagePaths = req.files
+      ? req.files.map((file) => `/uploads/${file.filename}`)
+      : [];
 
     // Create a new hotel document
     const newHotel = new Hotel({
       ...req.body,
       images: imagePaths,
       amenities: JSON.parse(req.body.amenities),
-      accessibility: JSON.parse(req.body.accessibility)
+      accessibility: JSON.parse(req.body.accessibility),
     });
 
     // Save the new hotel document to the database
     await newHotel.save();
-    res.status(201).json({ message: 'Hotel added successfully' });
+    res.status(201).json({ message: "Hotel added successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -38,7 +40,7 @@ exports.getHotelById = async (req, res) => {
   try {
     // Find hotel by ID
     const hotel = await Hotel.findById(req.params.id);
-    if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
+    if (!hotel) return res.status(404).json({ error: "Hotel not found" });
     res.json(hotel);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -50,13 +52,13 @@ exports.updateHotel = async (req, res) => {
   try {
     // Find hotel by ID
     const hotel = await Hotel.findById(req.params.id);
-    if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
+    if (!hotel) return res.status(404).json({ error: "Hotel not found" });
 
     // If no new files are uploaded, retain the existing images
     let imagePaths = hotel.images;
     if (req.files && req.files.length > 0) {
       // Update image paths if new files are uploaded
-      imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+      imagePaths = req.files.map((file) => `/uploads/${file.filename}`);
     }
 
     // Update hotel document with new data
@@ -66,12 +68,12 @@ exports.updateHotel = async (req, res) => {
         ...req.body,
         images: imagePaths,
         amenities: JSON.parse(req.body.amenities),
-        accessibility: JSON.parse(req.body.accessibility)
+        accessibility: JSON.parse(req.body.accessibility),
       },
       { new: true } // Return the updated hotel document
     );
 
-    res.json({ message: 'Hotel updated successfully', hotel: updatedHotel });
+    res.json({ message: "Hotel updated successfully", hotel: updatedHotel });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -82,8 +84,8 @@ exports.deleteHotel = async (req, res) => {
   try {
     // Find hotel by ID and delete
     const hotel = await Hotel.findByIdAndDelete(req.params.id);
-    if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
-    res.json({ message: 'Hotel deleted successfully' });
+    if (!hotel) return res.status(404).json({ error: "Hotel not found" });
+    res.json({ message: "Hotel deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

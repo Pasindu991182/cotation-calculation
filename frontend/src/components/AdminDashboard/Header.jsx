@@ -1,54 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaBell } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import profile from '../../assets/Profile.png';
+import axios from 'axios';
 
-export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [toggle, setToggle] = useState(false);
-  const [sessionData, setSessionData] = useState(null);
-  const [error, setError] = useState(null);
+export default function Header({ user, onLogout }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
-
-  const fetchSessionData = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/Session', {
-        withCredentials: true // include this if you are using cookies for session management
-      });
-      setSessionData(response.data);
-      setError(null); // Clear any previous errors
-    } catch (err) {
-      setError(err.response?.data.message || 'Failed to retrieve session data');
-      console.error('Error fetching session data:', err);
-    }
-  };
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
-    fetchSessionData();
-  }, []); // Fetch session data on component mount
+    // If user is passed as prop, use it
+    if (user) {
+      setCurrentUser(user);
+    } else {
+      // Otherwise check localStorage
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        setCurrentUser(JSON.parse(userData));
+      }
+    }
+
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [user]);
 
   const handleLogout = async () => {
-    try {
-      await axios.post('http://localhost:5000/logout', {}, {
-        withCredentials: true // include this if you are using cookies for session management
-      });
-      // Navigate to the login page after successful logout
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout failed:', err.response?.data.message || err.message);
-      // Optionally, handle error state
+    // If onLogout is provided as prop, use it
+    if (onLogout) {
+      onLogout();
+    } else {
+      // Otherwise implement logout here
+      try {
+        // Clear user data and token from localStorage
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        setCurrentUser(null);
+        // Navigate to the login page after successful logout
+        navigate('/login');
+      } catch (err) {
+        console.error('Logout failed:', err.response?.data.message || err.message);
+      }
     }
   };
 
   return (
     <header className="bg-white shadow px-4 py-3 flex items-center justify-end">
-
-      {/* <input
-        type="text"
-        placeholder="Search..."
-        className="w-full max-w-sm bg-gray-200 rounded-lg p-2" /> */}
-
       <div className="flex items-center space-x-4 h-full bg-white relative z-10">
         <span className="h-10 w-10 rounded-full hover:shadow-md hover:shadow-black hover:duration-500">
           <FaBell className="ms-2.5 mt-2.5 h-5 w-5" />
@@ -56,21 +64,43 @@ export default function Header() {
         <span className="h-10 w-10 rounded-full hover:shadow-md hover:shadow-black hover:duration-500">
           <IoMdMail className="ms-2 mt-2 h-6 w-6" />
         </span>
-        <img
-          src={profile}
-          alt="Profile"
-          onClick={() => setToggle(!toggle)}
-          className="h-10 w-10 rounded-full hover:shadow-md hover:shadow-black hover:duration-500"
-        />
-        <span className="text-gray-700 font-bold ">{sessionData?.Name}</span>
-      </div>
-      {toggle && (
-        <div className="fixed right-[9%] bg-black hover:shadow-sm hover:shadow-black text-white duration-300 mt-24 z-10">
-          <button onClick={handleLogout} className="border py-1 px-3 font-bold hover:bg-red-600 duration-200">
-            Log Out
-          </button>
+        
+        {/* User profile dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <div 
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            <img
+              src={profile}
+              alt="Profile"
+              className="h-10 w-10 rounded-full hover:shadow-md hover:shadow-black hover:duration-500"
+            />
+            {/* <span className="text-gray-700 font-bold">
+              {currentUser?.fullName || currentUser?.email || "Guest"}
+            </span> */}
+          </div>
+          
+          {/* Dropdown menu */}
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-65 bg-white rounded-md shadow-lg py-1 z-20 border border-gray-200">
+              <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
+                Current user :
+                <span className="font-bold">{currentUser?.fullName || "Guest"}</span><br />
+                Signed in as :
+                <span className="font-bold">{currentUser?.email || "Guest"}</span>
+              </div>
+              
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }
